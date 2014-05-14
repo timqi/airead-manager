@@ -1,0 +1,4 @@
+Flask
+Logbook
+Flask-SQLAlchemy
+MySQL-Python

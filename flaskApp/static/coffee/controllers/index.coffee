@@ -1,0 +1,5 @@
+define [
+  './base',
+  './main',
+  './home'
+], ->
