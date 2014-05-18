@@ -8,7 +8,7 @@ __version__ = '0.0.1'
 
 import os
 
-from flask import Flask
+from flask import Flask, redirect
 from model import db
 from logbook import Logger
 
@@ -45,6 +45,12 @@ else:
                                        app.config['LOG_DIR'] + '%s.log' % app.config['APP_NAME'])
 
 nested_log_setup = log_setup.get_default_setup()
+
+
+@app.route('/')
+def index():
+    return redirect('static/index.html')
+
 
 with nested_log_setup.applicationbound():
     log.debug('Starting application...')

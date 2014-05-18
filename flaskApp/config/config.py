@@ -14,3 +14,4 @@ class Default(object):
 class Dev(Default):
     DEBUG = True
     LOG_LEVEL = 'INFO'
+    SEND_FILE_MAX_AGE_DEFAULT = 0

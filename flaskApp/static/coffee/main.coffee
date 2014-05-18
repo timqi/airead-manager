@@ -1,4 +1,5 @@
 require.config
+  urlArgs: "v=" +  (new Date()).getTime()
   paths:
     'jQuery': '../bower_components/jquery/dist/jquery'
     'angular': '../bower_components/angular/angular'

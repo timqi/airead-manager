@@ -7,3 +7,6 @@ venv/*
 flaskApp/static/bower_components/*
 *~
 flaskApp/static/js/*
+envManager/*
+flaskApp/static/coffee/*/*.js
+flaskApp/static/coffee/*.js
