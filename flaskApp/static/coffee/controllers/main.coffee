@@ -11,7 +11,7 @@ treeDef =
 
 
 define ['./base'], (indexCtlModule) ->
-  indexCtlModule.controller 'MainCtl',
+  indexCtlModule.controller 'mainCtl',
     [
       '$scope',
       ($scope) ->

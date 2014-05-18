@@ -3,12 +3,11 @@ define ['./mainApp'], (app) ->
   app.config ($routeProvider) ->
     $routeProvider
       .when '/',
-        templateUrl: 'templates/home.html', controller: 'HomeCtl'
-      .when '/home',
-        templateUrl: 'templates/home.html', controller: 'HomeCtl'
-#      .when '/signup',
-#        templateUrl: 'views/sessions/signup.html', controller: 'sessions.SignupCtrl'
-#      .when '/signin',
-#        templateUrl: 'views/sessions/signin.html', controller: 'sessions.SigninCtrl'
-#      .otherwise
-#        redirectTo: '/'
+        templateUrl: 'templates/home.html', controller: 'homeCtl'
+
+    for name in app.moduleList
+      templateUrl = "templates/#{name}.html"
+      ctlName = "#{name}Ctl"
+      $routeProvider
+        .when "/#{name}",
+          templateUrl: templateUrl, controller: ctlName

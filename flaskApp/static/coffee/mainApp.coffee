@@ -1,14 +1,14 @@
 define [
   'angular',
+  'controllers/index',
   'angular-route',
   'angular-ui',
   'angular-bootstrap',
   'angular-bootstrap-tpls',
 
-  #custom
-  'controllers/index'
-], (angular) ->
+], (angular, moduleNames) ->
   console.log('mainApp init')
+  console.log('find modules: ', moduleNames)
   app = angular.module 'app', [
     'ngRoute',
     'ui.bootstrap'
@@ -17,4 +17,5 @@ define [
     'controllers'
   ]
 
+  app.moduleList = moduleNames
   app

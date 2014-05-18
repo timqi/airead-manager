@@ -1,6 +1,6 @@
 define ['./base'], (indexCtlModule) ->
   console.log('home init')
-  indexCtlModule.controller 'HomeCtl',
+  indexCtlModule.controller 'homeCtl',
     [
       '$scope',
       ($scope) ->
