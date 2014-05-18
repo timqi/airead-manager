@@ -14,3 +14,4 @@ bower install angular-bootstrap
 bower install angular-ui
 bower install bootstrap
 bower install angular-route
+bower install smart-table

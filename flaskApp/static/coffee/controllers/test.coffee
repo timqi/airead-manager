@@ -1,11 +1,10 @@
 define ['./base'], (indexCtlModule) ->
-  console.log('userManager init')
-  indexCtlModule.controller 'userManagerCtl',
+  console.log('test init')
+  indexCtlModule.controller 'testCtl',
     [
       '$scope',
       ($scope) ->
-        $scope.pageTitle = '用户管理'
-
+        $scope.pageTitle = 'home'
         $scope.rowCollection = [
           {firstName: 'Laurent', lastName: 'Renard', birthDate: new Date('1987-05-21'), balance: 102, email: 'whatever@gmail.com'},
           {firstName: 'Blandine', lastName: 'Faivre', birthDate: new Date('1987-04-25'), balance: -2323.22, email: 'oufblandou@gmail.com'},

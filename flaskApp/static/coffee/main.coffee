@@ -7,6 +7,7 @@ require.config
     'angular-ui': '../bower_components/angular-ui/build/angular-ui'
     'angular-bootstrap': '../bower_components/angular-bootstrap/ui-bootstrap'
     'angular-bootstrap-tpls': '../bower_components/angular-bootstrap/ui-bootstrap-tpls'
+    'smart-table': '../bower_components/smart-table/Smart-Table.min'
   shim:
     'jQuery': {'exports': 'jQuery'}
     'angular': {'exports': 'angular'}
@@ -14,6 +15,7 @@ require.config
     'angular-ui': {deps: ['angular']}
     'angular-bootstrap': {deps: ['angular']}
     'angular-bootstrap-tpls': {deps: ['angular']}
+    'smart-table': {deps: ['angular']}
 
 require ['jQuery', 'angular', './routes'], ($, angular) ->
   $ ->

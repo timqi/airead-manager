@@ -2,7 +2,8 @@ define [
   './base',
   './main',
   './home',
-  './userManager'
+  './userManager',
+  './test'
 ], (controllerModule) ->
   ctlList = []
   for q in controllerModule._invokeQueue
