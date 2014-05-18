@@ -6,8 +6,8 @@ treeDef =
     '系统设置': '4'
 
   '权限管理':
-    '管理组设置': 1
-    '用户': 2
+    '管理组设置': ''
+    '用户': 'userManager'
 
 
 define ['./base'], (indexCtlModule) ->

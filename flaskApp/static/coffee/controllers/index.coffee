@@ -1,5 +1,6 @@
 define [
   './base',
   './main',
-  './home'
+  './home',
+  './userManager'
 ], ->

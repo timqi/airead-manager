@@ -9,10 +9,12 @@ define [
   'controllers/index'
 ], (angular) ->
   console.log('mainApp init')
-  angular.module 'app', [
+  app = angular.module 'app', [
     'ngRoute',
     'ui.bootstrap'
 
     # customs
     'controllers'
   ]
+
+  app
