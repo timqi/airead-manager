@@ -13,7 +13,7 @@ from model import db
 from logbook import Logger
 
 import config
-from blueprints import helloworld
+import blueprints
 import utils
 
 log = Logger(__name__)
@@ -21,7 +21,10 @@ log = Logger(__name__)
 
 def create_app(config_object):
     _app = Flask(__name__)
-    _app.register_blueprint(helloworld.blueprint)
+
+    for (name, bp) in blueprints.blueprints.iteritems():
+        print 'load %s blueprint' % name
+        _app.register_blueprint(bp.blueprint)
     db.init_app(_app)
 
     _app.config.from_object(config_object)
