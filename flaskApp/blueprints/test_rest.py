@@ -6,7 +6,6 @@ __author__ = 'airead'
 
 path = os.path.splitext(os.path.basename(__file__))[0]
 url_prefix = '/' + path
-print 'test url_prefix: ', url_prefix
 
 blueprint = Blueprint(path, __name__, url_prefix='/' + path)
 

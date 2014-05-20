@@ -1,8 +1,12 @@
-__author__ = 'airead'
-
+import os
 from flask.blueprints import Blueprint
 
-blueprint = Blueprint('helloworld', __name__, url_prefix='/helloworld')
+__author__ = 'airead'
+
+path = os.path.splitext(os.path.basename(__file__))[0]
+url_prefix = '/' + path
+
+blueprint = Blueprint(path, __name__, url_prefix='/' + path)
 
 
 @blueprint.route('/')
