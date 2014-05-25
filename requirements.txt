@@ -3,3 +3,4 @@ Logbook
 Flask-SQLAlchemy
 MySQL-Python
 Flask-Testing
+Flask-RESTful
