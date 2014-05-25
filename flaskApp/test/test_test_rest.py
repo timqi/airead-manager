@@ -34,4 +34,4 @@ class Test_test_rest(TestCase):
 
     def test_delete(self):
         rv = self.client.post('test_rest/4?at=delete')
-        assert_equal(rv.data, 'delete 4')
+        assert_equal(rv.data, '"delete 4"\n')

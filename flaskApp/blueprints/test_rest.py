@@ -2,6 +2,7 @@ from flask.blueprints import Blueprint
 import os
 from flask.ext import restful
 from utils.restful import Resource
+from flask import abort
 
 __author__ = 'airead'
 
@@ -21,6 +22,9 @@ class TestRestfuls(Resource):
 class TestRestful(Resource):
     def get(self, rid):
         return 'get %s' % rid
+
+    def post(self, rid):  # just for [put, delete] method allow by post
+        abort(405)
 
     def put(self, rid):
         return 'put %s' % rid
