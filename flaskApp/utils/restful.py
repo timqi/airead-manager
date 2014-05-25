@@ -10,7 +10,6 @@ __author__ = 'airead'
 class Resource(restful.Resource):
     def dispatch_request(self, *args, **kwargs):
         # Airead custom method, e.g. ?at=put
-        print request.args
         method_name = request.args.get('at', None)
         if method_name is None:
             method_name = request.method.lower()
