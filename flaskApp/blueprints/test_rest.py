@@ -1,16 +1,41 @@
 from flask.blueprints import Blueprint
 import os
-from restful.test_rest import test_rest_restful
+from flask.ext import restful
+from utils.restful import Resource
 
 __author__ = 'airead'
 
 path = os.path.splitext(os.path.basename(__file__))[0]
-url_prefix = '/' + path
-
 blueprint = Blueprint(path, __name__, url_prefix='/' + path)
+api = restful.Api(blueprint)
 
 
-@blueprint.route('/', methods=['GET', 'POST'])
-def index():
-    ret = test_rest_restful()
-    return ret
+class TestRestfuls(Resource):
+    def get(self):
+        return 'test get'
+
+    def post(self):
+        return 'test post'
+
+
+class TestRestful(Resource):
+    def get(self, rid):
+        return 'get %s' % rid
+
+    def put(self, rid):
+        return 'put %s' % rid
+
+    def delete(self, rid):
+        return 'delete %s' % rid
+
+
+api.add_resource(TestRestfuls, '/')
+api.add_resource(TestRestful, '/<string:rid>')
+
+
+def put():
+    return 'test put'
+
+
+def delete():
+    return 'test delete'
