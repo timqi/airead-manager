@@ -5,7 +5,7 @@ __author__ = 'airead'
 
 def restful(get, post, put, delete):
     ret = 'unknown method', 400
-    action = request.values['action']
+    action = request.values['at']
     action = action.upper()
     if action == 'GET':
         ret = get()
