@@ -8,7 +8,7 @@ class Default(object):
     LOG_LEVEL = 'WARNING'
     LOG_DIR = 'logs/'
 
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/real.db'
 
 
 class Dev(Default):
