@@ -5,6 +5,7 @@ from flask.ext.restful import Api, reqparse, fields, marshal_with
 from utils.restful import Resource
 from model.user import UserModel
 from model import db
+from utils.errors import Code
 
 __author__ = 'airead'
 
@@ -34,21 +35,31 @@ class Users(Resource):
         db.session.add(user)
         db.session.commit()
 
+        return {'code': Code.SUCCESS}
+
 
 class User(Resource):
     @marshal_with(user_fields)
     def get(self, email):
         return db.session.query(UserModel).filter_by(email=email).first()
 
-
     def post(self):
         abort(405)
 
-    def put(self):
-        pass
+    def put(self, email):
+        parser = reqparse.RequestParser()
+        parser.add_argument('username', type=str)
+        args = parser.parse_args()
+        db.session.query(UserModel).filter_by(email=email).update(
+            {UserModel.username: args['username']}
+        )
+        db.session.commit()
+        return {'code': Code.SUCCESS}
 
-    def delete(self):
-        pass
+    def delete(self, email):
+        db.session.query(UserModel).filter_by(email=email).delete()
+        db.session.commit()
+        return {'code': Code.SUCCESS}
 
 
 api.add_resource(Users, '/')
