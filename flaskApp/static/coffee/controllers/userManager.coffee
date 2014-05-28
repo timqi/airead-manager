@@ -1,16 +1,20 @@
-define ['./base'], (indexCtlModule) ->
+define ['./base', 'dialogs'], (indexCtlModule) ->
   console.log 'userManager init'
   indexCtlModule.controller 'userManagerCtl',
     [
       '$scope'
       '$http'
-      ($scope, $http) ->
+      '$dialogs'
+      ($scope, $http, $dialogs) ->
         $scope.pageTitle = '用户管理'
 
         $scope.columnCollection = [
             {label: 'username', map: 'username'},
             {label: 'Email', map: 'email', type: 'email', isEditable: true}
         ];
+
+        main = () ->
+          $scope.query()
 
         $scope.query = () ->
           $scope.loading = true
@@ -34,5 +38,29 @@ define ['./base'], (indexCtlModule) ->
             .finally () ->
               $scope.loading = false
 
-        $scope.query()
+        $scope.add = () ->
+          $scope.addDisabled = true
+          dia = $dialogs.create 'templates/userManagerEdit.html',
+            userManagerEditCtl, {}, {}
+
+          dia.result.then (obj) ->
+            console.log 'add obj', obj
+          .finally () ->
+            $scope.addDisabled = false
+
     ]
+
+userManagerEditCtl = [
+  '$scope'
+  '$modalInstance'
+  'data'
+  ($scope, $modalInstance, data) ->
+    $scope.obj = data
+
+    $scope.cancel = () ->
+      $modalInstance.dismiss 'cancel'
+
+    $scope.save = () ->
+      $modalInstance.close $scope.obj
+
+]

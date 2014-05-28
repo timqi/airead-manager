@@ -1,4 +1,14 @@
-<div class="row">
-    <h1>{{ pageTitle }}</h1>
-    <smart-table class="table table-bordered" rows="userCollection" columns="columnCollection"></smart-table>
+<div class="item-main">
+    <div class="row">
+        <div class="col-md-2">
+            <h3>{{ pageTitle }}</h3>
+        </div>
+        <div class="col-md-10">
+            <button ng-click="add()" class="btn btn-primary">添加</button>
+        </div>
+    </div>
+    <div class="row">
+        <smart-table class="table table-bordered" rows="userCollection" columns="columnCollection"></smart-table>
+    </div>
 </div>
+

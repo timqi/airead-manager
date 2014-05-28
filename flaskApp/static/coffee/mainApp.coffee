@@ -6,6 +6,7 @@ define [
   'angular-bootstrap'
   'angular-bootstrap-tpls'
   'smart-table'
+  'dialogs'
 ], (angular, moduleNames) ->
   console.log('mainApp init')
   console.log('find modules: ', moduleNames)
@@ -13,6 +14,7 @@ define [
     'ngRoute',
     'ui.bootstrap'
     'smartTable.table'
+    'dialogs'
 
     # customs
     'controllers'

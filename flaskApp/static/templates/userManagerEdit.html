@@ -1,0 +1,90 @@
+<div>
+    <form role="form" name="form" class="form-horizontal xshop-form">
+        <div class="form-group">
+            <h2 style="text-align: center; color: #666; border-bottom: 1px solid #EEEEEE; margin: 10px 30px; padding-bottom: 10px;">
+                编辑商品</h2>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">商品</label>
+
+            <div class="col-md-10">
+                <select ui-select2 ng-model="obj.type" style="width:5em;">
+                    <option ng-repeat="type in typeList" value="{{ $index }}">{{ type }}</option>
+                </select>&nbsp;&nbsp;
+
+                <!--商品-->
+                <select ui-select2 ng-model="obj.index"
+                        style="width: 14em; font-size: 12px">
+                    <option ng-repeat="(index, thing) in gamehero" value="{{index}}">
+                        {{ thing.name }}
+                    </option>
+                    <option ng-repeat="(index, thing) in gameitem" value="{{index}}">
+                        {{ thing.name }}
+                    </option>
+                    <option ng-repeat="(index, thing) in gamegem" value="{{index}}">
+                        {{ thing.name }}
+                    </option>
+                </select>&nbsp;&nbsp;
+
+                <!--数量-->
+                <input ng-model="obj.count" class="form-control" type="number" style="width: 7em;">&nbsp;&nbsp;个
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">价格</label>
+
+            <div class="col-md-10">
+                <!--价格-->
+                <input ng-model="obj.price" class="form-control" type="text" style="width: 8em;">&nbsp;&nbsp;
+
+                <!--货币-->
+                <select ui-select2 ng-model="obj.sellType" style="width: 5em;">
+                    <option ng-repeat="type in sellType" value="{{ $index }}">{{ type }}</option>
+                </select>&nbsp;&nbsp;
+                <label class="form-control-static">折扣</label>&nbsp;&nbsp;
+
+                <!--打折状态-->
+                <select ui-select2 ng-model="obj.discountStatus" style="width: 5em;">
+                    <option ng-repeat="status in discountStatus" value="{{ $index }}">{{ status }}</option>
+                </select>&nbsp;&nbsp;
+
+                <!--打折量-->
+                <input ng-model="obj.discount" ng-show="obj.discountStatus == 1" class="form-control" style="width: 5em;">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">名称</label>
+
+            <div class="col-md-9">
+                <input ng-model="obj.name" type="text" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">描述</label>
+
+            <div class="col-md-9">
+                <textarea ng-model="obj.desc" placeholder="这里填写描述" class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">状态</label>
+
+            <div class="col-md-10">
+                <select ui-select2 ng-model="obj.saleStatus" style="width: 5em;">
+                    <option ng-repeat="type in saleStatus" value="{{ $index }}">{{ type }}</option>
+                </select>
+            </div>
+
+            <div class="form-control-feedback" style="margin-top: 30px; padding-bottom: 15px">
+                <div class="text-center">
+                    <button ng-disabled="sendDisabled" ng-click="save()" class="btn btn-default">
+                        保存
+                    </button>
+                    <button ng-click="cancel()" class="btn btn-primary">
+                        关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
