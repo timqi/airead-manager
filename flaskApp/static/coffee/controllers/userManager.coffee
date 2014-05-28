@@ -45,9 +45,17 @@ define ['./base', 'dialogs'], (indexCtlModule) ->
 
           dia.result.then (obj) ->
             console.log 'add obj', obj
+            $http.post '/users/', obj
+              .success (data) ->
+                console.log('add success ', data)
+              .error (data) ->
+                console.log('add failed', data)
+              .finally () ->
+                $scope.query()
           .finally () ->
             $scope.addDisabled = false
 
+        main()
     ]
 
 userManagerEditCtl = [
