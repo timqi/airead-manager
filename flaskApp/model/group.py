@@ -12,7 +12,9 @@ class GroupModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     #: 组名称
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+
+    users = db.relationship('UserGroupModel', backref='group')
 
     def __init__(self, name):
         self.name = name

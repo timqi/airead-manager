@@ -13,3 +13,5 @@ __author__ = 'airead'
 class UserGroupModel(db.Model):
     __tablename__ = 'user_groups'
 
+    user_id = db.Column(db.Integer, primary_key=True)
+    group_id = db.Column(db.Integer, primary_key=True)

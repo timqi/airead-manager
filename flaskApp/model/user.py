@@ -43,6 +43,8 @@ class UserModel(db.Model):
     #: 注册日期
     date_joined = db.Column(db.DateTime, nullable=False)
 
+    groups = db.relationship('UserGroupModel', backref='user')
+
     def __init__(self, username, email):
         self.username = username
         self.email = email
