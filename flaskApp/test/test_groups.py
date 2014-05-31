@@ -18,10 +18,9 @@ SuccessRet = {
 class TestConfig(object):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test_manager.db'
-    SQLALCHEMY_ECHO = False
 
 
-class Test_users(TestCase):
+class Test_Group(TestCase):
     def create_app(self):
         app.config.from_object(TestConfig)
         return app
