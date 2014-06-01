@@ -1,5 +1,5 @@
 import os
-from flask import abort, request
+from flask import abort, request, url_for
 from flask.blueprints import Blueprint
 from flask.ext.restful import Api, reqparse, fields, marshal_with
 from aireadManager.utils.restful import Resource
@@ -35,7 +35,6 @@ class Users(Resource):
         return UserModel.query.all()
 
     def post(self):
-        print dict(request.form)
         parser = reqparse.RequestParser()
         parser.add_argument('username', type=str, required=True)
         parser.add_argument('first_name', type=str, required=True)
@@ -53,7 +52,7 @@ class Users(Resource):
         db.session.add(user)
         db.session.commit()
 
-        return {'code': Code.SUCCESS}
+        return {'code': Code.SUCCESS, 'uri': api.url_for(User, uid=user.id)}
 
 
 class User(Resource):
@@ -82,7 +81,7 @@ class User(Resource):
         return {'code': Code.SUCCESS}
 
 
-api.add_resource(Users, '/')
-api.add_resource(User, '/<string:uid>')
+api.add_resource(Users, '/', endpoint='.users')
+api.add_resource(User, '/<string:uid>', endpoint='.user')
 
 

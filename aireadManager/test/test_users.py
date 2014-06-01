@@ -90,7 +90,7 @@ class Test_users(TestCase):
             'date_joined': get_string_from_datetime(datetime.now())
         }
         rv = self.client.post('users/?at=post', data=data)
-        assert_equal(rv.json, SuccessRet)
+        assert_equal(rv.json['uri'], '/users/3')
 
         users = db.session.query(UserModel).all()
         assert_equal(len(users), 3)
