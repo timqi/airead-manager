@@ -83,5 +83,3 @@ class User(Resource):
 
 api.add_resource(Users, '/', endpoint='.users')
 api.add_resource(User, '/<string:uid>', endpoint='.user')
-
-
