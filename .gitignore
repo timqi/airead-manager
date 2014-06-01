@@ -4,9 +4,10 @@
 venv/*
 *.pyc
 *_flymake.py
-flaskApp/static/bower_components/*
+aireadManager/static/bower_components/*
 *~
-flaskApp/static/js/*
+aireadManager/static/js/*
 envManager/*
-flaskApp/static/coffee/*/*.js
-flaskApp/static/coffee/*.js
+aireadManager/static/coffee/*/*.js
+aireadManager/static/coffee/*.js
+*.egg-info/*

@@ -1,7 +1,7 @@
 from flask.blueprints import Blueprint
 import os
 from flask.ext import restful
-from utils.restful import Resource
+from aireadManager.utils.restful import Resource
 from flask import abort
 
 __author__ = 'airead'

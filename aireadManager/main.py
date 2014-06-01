@@ -55,9 +55,11 @@ def index():
     return redirect('static/index.html')
 
 
-with nested_log_setup.applicationbound():
-    log.debug('Starting application...')
+def main():
+    app.debug = True
+    app.run()
 
-    if __name__ == '__main__':
-        app.debug = True
-        app.run()
+if __name__ == '__main__':
+    with nested_log_setup.applicationbound():
+        log.debug('Starting application...')
+        main()

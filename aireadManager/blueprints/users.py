@@ -2,11 +2,11 @@ import os
 from flask import abort, request
 from flask.blueprints import Blueprint
 from flask.ext.restful import Api, reqparse, fields, marshal_with
-from utils.restful import Resource
-from model.user import UserModel
-from model import db
-from utils.errors import Code
-from utils.util import get_datetime_from_string
+from aireadManager.utils.restful import Resource
+from aireadManager.model.user import UserModel
+from aireadManager.model import db
+from aireadManager.utils.errors import Code
+from aireadManager.utils.util import get_datetime_from_string
 
 __author__ = 'airead'
 

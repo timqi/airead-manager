@@ -1,5 +1,5 @@
 # coding=utf-8
-from model.db_declare import db
+from db_declare import db
 
 __author__ = 'airead'
 
