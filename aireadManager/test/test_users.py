@@ -2,11 +2,11 @@ from flask.ext.testing import TestCase
 from nose.tools import assert_equal
 from datetime import datetime
 
-from main import app
-from model import db
-from model.user import UserModel
-from utils.errors import Code
-from utils.util import get_string_from_datetime
+from aireadManager.main import app
+from aireadManager.model import db
+from aireadManager.model.user import UserModel
+from aireadManager.utils.errors import Code
+from aireadManager.utils.util import get_string_from_datetime
 
 
 __author__ = 'airead'
@@ -67,9 +67,7 @@ class Test_users(TestCase):
         db.session.remove()
         db.drop_all()
 
-    def test_get(self):
-        self.maxDiff = None
-        excepted_users = [USER1, USER2]
+    def test_users_get(self):
         rv = self.client.get('/users/')
         user1, user2 = rv.json
 
@@ -78,12 +76,12 @@ class Test_users(TestCase):
         assert_equal(user2['id'], 2)
         assert_equal(user2['username'], 'user2')
 
-    def test_post(self):
+    def test_users_post(self):
         data = {
             'username': 'user3',
             'first_name': 'us',
             'last_name': 'er3',
-            'email': 'user1@a.com',
+            'email': 'user3@a.com',
             'password': 'p3',
             'is_staff': True,
             'is_active': True,
@@ -97,25 +95,26 @@ class Test_users(TestCase):
         users = db.session.query(UserModel).all()
         assert_equal(len(users), 3)
 
-    def test_put(self):
+    def test_user_put(self):
         data = {
             'username': 'Airead'
         }
-        rv = self.client.post('users/email1?at=put', data=data)
+        rv = self.client.post('users/1?at=put', data=data)
         assert_equal(rv.json, SuccessRet)
 
-        user = db.session.query(UserModel).filter_by(email='email1').one()
+        user = db.session.query(UserModel).filter_by(id=1).one()
         assert_equal(user.username, 'Airead')
 
-    def test_delete(self):
-        rv = self.client.post('users/email1?at=delete')
+    def test_user_delete(self):
+        rv = self.client.post('users/1?at=delete')
         assert_equal(rv.json, SuccessRet)
 
         users = db.session.query(UserModel).all()
         assert_equal(len(users), 1)
         user = users[0]
-        assert_equal(user.username, self.user2['username'])
+        assert_equal(user.username, USER2['username'])
 
-    def test_get_by_email(self):
-        rv = self.client.get('/users/email1')
-        assert_equal(rv.json, self.user1)
+    def test_user_get(self):
+        rv = self.client.get('/users/1')
+        user = rv.json
+        assert_equal(user['username'], USER1['username'])

@@ -9,3 +9,7 @@ def get_datetime_from_string(datestr, date_format='%Y/%m/%d %H:%M:%S'):
 
 def get_string_from_datetime(dateobj, date_format='%Y/%m/%d %H:%M:%S'):
     return dateobj.strftime(date_format)
+
+
+def datetime_type(datestr):
+    return get_datetime_from_string(datestr)

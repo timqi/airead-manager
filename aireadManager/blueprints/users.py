@@ -6,7 +6,7 @@ from aireadManager.utils.restful import Resource
 from aireadManager.model.user import UserModel
 from aireadManager.model import db
 from aireadManager.utils.errors import Code
-from aireadManager.utils.util import get_datetime_from_string
+from aireadManager.utils.util import datetime_type
 
 __author__ = 'airead'
 
@@ -45,13 +45,11 @@ class Users(Resource):
         parser.add_argument('is_staff', type=bool, required=True)
         parser.add_argument('is_active', type=bool, required=True)
         parser.add_argument('is_superuser', type=bool, required=True)
-        parser.add_argument('last_login', type=get_datetime_from_string, required=True)
-        parser.add_argument('date_joined', type=get_datetime_from_string, required=True)
+        parser.add_argument('last_login', type=datetime_type, required=True)
+        parser.add_argument('date_joined', type=datetime_type, required=True)
         args = parser.parse_args()
 
-        print 'args.last_login:', args['last_login']
-
-        user = UserModel(args)
+        user = UserModel(**args)
         db.session.add(user)
         db.session.commit()
 
@@ -60,29 +58,31 @@ class Users(Resource):
 
 class User(Resource):
     @marshal_with(user_fields)
-    def get(self, email):
-        return db.session.query(UserModel).filter_by(email=email).first()
+    def get(self, uid):
+        return db.session.query(UserModel).filter_by(id=uid).first()
 
     def post(self):
         abort(405)
 
-    def put(self, email):
+    def put(self, uid):
         parser = reqparse.RequestParser()
         parser.add_argument('username', type=str)
+        parser.add_argument('password', type=str)
         args = parser.parse_args()
-        db.session.query(UserModel).filter_by(email=email).update(
-            {UserModel.username: args['username']}
-        )
+
+        set_data = {key: val for key, val in args.iteritems() if val is not None}
+
+        db.session.query(UserModel).filter_by(id=uid).update(set_data)
         db.session.commit()
         return {'code': Code.SUCCESS}
 
-    def delete(self, email):
-        db.session.query(UserModel).filter_by(email=email).delete()
+    def delete(self, uid):
+        db.session.query(UserModel).filter_by(id=uid).delete()
         db.session.commit()
         return {'code': Code.SUCCESS}
 
 
 api.add_resource(Users, '/')
-api.add_resource(User, '/<string:email>')
+api.add_resource(User, '/<string:uid>')
 
 

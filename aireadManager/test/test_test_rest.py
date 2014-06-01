@@ -1,6 +1,6 @@
 import json
 from flask.ext.testing import TestCase
-from main import app
+from aireadManager.main import app
 from nose.tools import assert_equal
 
 
