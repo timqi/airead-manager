@@ -21,7 +21,7 @@ __author__ = 'airead'
 class UserModel(db.Model):
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
     #: 用户名
     username = db.Column(db.String(30), unique=True, nullable=False)
     #: 名字
@@ -44,10 +44,6 @@ class UserModel(db.Model):
     date_joined = db.Column(db.DateTime, nullable=False)
 
     groups = db.relationship('UserGroupModel', backref='user')
-
-    def __init__(self, username, email):
-        self.username = username
-        self.email = email
 
     def __repr__(self):
         return '<User %r>' % self.username

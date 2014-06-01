@@ -1,17 +1,46 @@
 from flask.ext.testing import TestCase
 from nose.tools import assert_equal
+from datetime import datetime
 
 from main import app
 from model import db
 from model.user import UserModel
 from utils.errors import Code
+from utils.util import get_string_from_datetime
 
 
 __author__ = 'airead'
 
+assert_equal.__self__.maxDiff = None
 
 SuccessRet = {
     'code': Code.SUCCESS
+}
+
+USER1 = {
+    'username': 'user1',
+    'first_name': 'us',
+    'last_name': 'er1',
+    'email': 'user1@a.com',
+    'password': 'p1',
+    'is_staff': True,
+    'is_active': True,
+    'is_superuser': True,
+    'last_login': datetime.now(),
+    'date_joined': datetime.now()
+}
+
+USER2 = {
+    'username': 'user2',
+    'first_name': 'us',
+    'last_name': 'er2',
+    'email': 'user2@a.com',
+    'password': 'p2',
+    'is_staff': False,
+    'is_active': False,
+    'is_superuser': False,
+    'last_login': datetime.now(),
+    'date_joined': datetime.now()
 }
 
 
@@ -28,10 +57,8 @@ class Test_users(TestCase):
 
     def setUp(self):
         db.create_all()
-        self.user1 = dict(username='test1', email='email1')
-        self.user2 = dict(username='test2', email='email2')
-        test1 = UserModel(**self.user1)
-        test2 = UserModel(**self.user2)
+        test1 = UserModel(**USER1)
+        test2 = UserModel(**USER2)
         db.session.add(test1)
         db.session.add(test2)
         db.session.commit()
@@ -41,25 +68,29 @@ class Test_users(TestCase):
         db.drop_all()
 
     def test_get(self):
-        excepted_users = [
-            {
-                'username': 'test1',
-                'email': 'email1'
-            },
-            {
-                'username': 'test2',
-                'email': 'email2'
-            }
-        ]
+        self.maxDiff = None
+        excepted_users = [USER1, USER2]
         rv = self.client.get('/users/')
-        assert_equal(rv.json, excepted_users)
+        user1, user2 = rv.json
+
+        assert_equal(user1['id'], 1)
+        assert_equal(user1['username'], 'user1')
+        assert_equal(user2['id'], 2)
+        assert_equal(user2['username'], 'user2')
 
     def test_post(self):
         data = {
-            'username': 'Airead Fan',
-            'email': 'fgh1987168@gmail.com'
+            'username': 'user3',
+            'first_name': 'us',
+            'last_name': 'er3',
+            'email': 'user1@a.com',
+            'password': 'p3',
+            'is_staff': True,
+            'is_active': True,
+            'is_superuser': True,
+            'last_login': get_string_from_datetime(datetime.now()),
+            'date_joined': get_string_from_datetime(datetime.now())
         }
-
         rv = self.client.post('users/?at=post', data=data)
         assert_equal(rv.json, SuccessRet)
 

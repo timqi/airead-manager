@@ -1,11 +1,12 @@
 import os
-from flask import abort
+from flask import abort, request
 from flask.blueprints import Blueprint
 from flask.ext.restful import Api, reqparse, fields, marshal_with
 from utils.restful import Resource
 from model.user import UserModel
 from model import db
 from utils.errors import Code
+from utils.util import get_datetime_from_string
 
 __author__ = 'airead'
 
@@ -13,10 +14,18 @@ path = os.path.splitext(os.path.basename(__file__))[0]
 blueprint = Blueprint(path, __name__, url_prefix='/' + path)
 api = Api(blueprint)
 
-
 user_fields = {
+    'id': fields.Integer,
     'username': fields.String,
+    'first_name': fields.String,
+    'last_name': fields.String,
     'email': fields.String,
+    'password': fields.String,
+    'is_staff': fields.Boolean,
+    'is_active': fields.Boolean,
+    'is_superuser': fields.Boolean,
+    'last_login': fields.DateTime,
+    'date_joined': fields.DateTime,
 }
 
 
@@ -26,12 +35,23 @@ class Users(Resource):
         return UserModel.query.all()
 
     def post(self):
+        print dict(request.form)
         parser = reqparse.RequestParser()
-        parser.add_argument('username', type=str)
-        parser.add_argument('email', type=str)
+        parser.add_argument('username', type=str, required=True)
+        parser.add_argument('first_name', type=str, required=True)
+        parser.add_argument('last_name', type=str, required=True)
+        parser.add_argument('email', type=str, required=True)
+        parser.add_argument('password', type=str, required=True)
+        parser.add_argument('is_staff', type=bool, required=True)
+        parser.add_argument('is_active', type=bool, required=True)
+        parser.add_argument('is_superuser', type=bool, required=True)
+        parser.add_argument('last_login', type=get_datetime_from_string, required=True)
+        parser.add_argument('date_joined', type=get_datetime_from_string, required=True)
         args = parser.parse_args()
 
-        user = UserModel(args['username'], args['email'])
+        print 'args.last_login:', args['last_login']
+
+        user = UserModel(args)
         db.session.add(user)
         db.session.commit()
 
