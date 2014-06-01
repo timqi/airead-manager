@@ -13,5 +13,6 @@ __author__ = 'airead'
 class GroupPermissionModel(db.Model):
     __tablename__ = 'group_permissions'
 
-    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'), primary_key=True)
-    permission_id = db.Column(db.Integer, db.ForeignKey('permissions.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
+    permission_id = db.Column(db.Integer, db.ForeignKey('permissions.id'))
