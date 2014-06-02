@@ -15,8 +15,10 @@ class PermissionModel(db.Model):
     __tablename__ = 'permissions'
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
+    #: 名称
     name = db.Column(db.String(50), unique=True, nullable=False)
-    desc = db.Column(db.String(50), unique=True, nullable=False)
+    #: 标识
+    tag = db.Column(db.String(40), unique=True, nullable=True)
 
     group = db.relationship('GroupPermissionModel', backref='permission')
 
