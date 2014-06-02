@@ -7,6 +7,7 @@ from aireadManager.model import db
 from aireadManager.model.user import UserModel
 from aireadManager.utils.errors import Code
 from aireadManager.utils.util import get_string_from_datetime
+from aireadManager.test.init_te_st_db import USER1, USER2, init_db
 
 
 __author__ = 'airead'
@@ -15,32 +16,6 @@ assert_equal.__self__.maxDiff = None
 
 SuccessRet = {
     'code': Code.SUCCESS
-}
-
-USER1 = {
-    'username': 'user1',
-    'first_name': 'us',
-    'last_name': 'er1',
-    'email': 'user1@a.com',
-    'password': 'p1',
-    'is_staff': True,
-    'is_active': True,
-    'is_superuser': True,
-    'last_login': datetime.now(),
-    'date_joined': datetime.now()
-}
-
-USER2 = {
-    'username': 'user2',
-    'first_name': 'us',
-    'last_name': 'er2',
-    'email': 'user2@a.com',
-    'password': 'p2',
-    'is_staff': False,
-    'is_active': False,
-    'is_superuser': False,
-    'last_login': datetime.now(),
-    'date_joined': datetime.now()
 }
 
 
@@ -57,11 +32,7 @@ class Test_users(TestCase):
 
     def setUp(self):
         db.create_all()
-        test1 = UserModel(**USER1)
-        test2 = UserModel(**USER2)
-        db.session.add(test1)
-        db.session.add(test2)
-        db.session.commit()
+        init_db(self.app)
 
     def tearDown(self):
         db.session.remove()
@@ -118,3 +89,7 @@ class Test_users(TestCase):
         rv = self.client.get('/users/1')
         user = rv.json
         assert_equal(user['username'], USER1['username'])
+
+    def test_user_info_get(self):
+        rv = self.client.get('/users/info/1')
+        print rv.json

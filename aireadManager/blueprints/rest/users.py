@@ -2,7 +2,6 @@ import os
 from flask import abort, request, url_for
 from flask.blueprints import Blueprint
 from flask.ext.restful import Api, reqparse, fields, marshal_with
-from aireadManager.utils.principal import get_user_permissions
 from aireadManager.utils.restful import Resource
 from aireadManager.model.user import UserModel
 from aireadManager.model import db
@@ -28,6 +27,7 @@ user_fields = {
     'last_login': fields.DateTime,
     'date_joined': fields.DateTime,
 }
+
 
 class Users(Resource):
     @marshal_with(user_fields)
@@ -87,14 +87,21 @@ class UserInfo(Resource):
         if not user:
             return {'code': Code.NOT_FOUND}
 
-        perms = get_user_permissions(user)
+        groups = user.get_groups()
+        perms = user.get_permissions()
+
+        group_names = [g.name for g in groups]
+        perm_tags = [p.tag for p in perms]
 
         ret = {
             'id': user.id,
-            'groups': groups,
-            'permissions': perms,
+            'group_names': group_names,
+            'permission_tags': perm_tags
         }
+
+        return ret
 
 
 api.add_resource(Users, '/', endpoint='.users')
 api.add_resource(User, '/<string:uid>', endpoint='.user')
+api.add_resource(UserInfo, '/info/<string:uid>', endpoint='.user_info')
