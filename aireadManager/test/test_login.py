@@ -94,9 +94,12 @@ class Test_users(TestCase):
         assert_equal(rv.data, USER1['username'])
 
     def test_login_user_permissions(self):
+        db.drop_all()
+        from aireadManager.create_db import init_db
+        init_db(self.app)
         data = {
-            'username': USER1['username'],
-            'password': USER1['password']
+            'username': 'admin',
+            'password': 'admin'
         }
         rv = self.client.post('/login/', data=data)
         assert_equal(rv.json['code'], Code.SUCCESS)

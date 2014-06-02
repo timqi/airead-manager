@@ -14,6 +14,12 @@ def get_user_permissions(user):
         groups.add(g)
     print 'user %s has groups: %s' % (user, groups)
 
+    for group in groups:
+        for assoc in group.permissions:
+            p = assoc.permission
+            permissions.add(p)
+    print 'user %s has permissions: %s' % (user, permissions)
+
     return permissions
 
 

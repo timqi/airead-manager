@@ -101,11 +101,16 @@ def group_permission_init():
         db.session.commit()
 
 
-with app.app_context():
-    db.create_all()
+def init_db(used_app):
+    with used_app.app_context():
+        db.create_all()
 
-    admin_init()
-    group_init()
-    user_group_init()
-    permission_init()
-    group_permission_init()
+        admin_init()
+        group_init()
+        user_group_init()
+        permission_init()
+        group_permission_init()
+
+
+if __name__ == '__main__':
+    init_db(app)

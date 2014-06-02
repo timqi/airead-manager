@@ -15,7 +15,7 @@ class GroupModel(db.Model):
     name = db.Column(db.String(80), unique=True, nullable=False)
 
     users = db.relationship('UserGroupModel', backref='group')
-    permission = db.relationship('GroupPermissionModel', backref='group')
+    permissions = db.relationship('GroupPermissionModel', backref='group')
 
     def __repr__(self):
         return '<Group %r>' % self.id

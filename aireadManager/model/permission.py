@@ -22,3 +22,5 @@ class PermissionModel(db.Model):
 
     group = db.relationship('GroupPermissionModel', backref='permission')
 
+    def __repr__(self):
+        return '<Perm %s>' % self.tag
