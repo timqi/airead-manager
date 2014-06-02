@@ -3,7 +3,7 @@ from setuptools import setup
 
 entry_points = {
     'console_scripts': [
-        'airead_manager = aireadManager.main:main',
+        'aimanager = aireadManager.main:main',
     ],
 }
 
