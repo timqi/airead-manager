@@ -15,6 +15,8 @@ from logbook import Logger
 import config
 import blueprints
 import utils
+from utils import login
+from utils import principal
 
 log = Logger(__name__)
 
@@ -25,7 +27,10 @@ def create_app(config_object):
     for (name, bp) in blueprints.blueprints.iteritems():
         print 'load %s blueprint' % name
         _app.register_blueprint(bp.blueprint)
+
     db.init_app(_app)
+    principal.principal.init_app(_app)
+    login.login_manager.init_app(_app)
 
     _app.config.from_object(config_object)
     override_env_name = 'FLASK_SEED_CONFIG'
