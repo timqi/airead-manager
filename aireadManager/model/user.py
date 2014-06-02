@@ -47,3 +47,19 @@ class UserModel(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
+
+    def get_permissions(slef):
+        permissions = set()
+        groups = set()
+        for assoc in self.groups:
+            g = assoc.group
+            groups.add(g)
+        print 'user %s has groups: %s' % (user, groups)
+
+        for group in groups:
+            for assoc in group.permissions:
+                p = assoc.permission
+                permissions.add(p)
+        print 'user %s has permissions: %s' % (user, permissions)
+
+        return permissions

@@ -6,23 +6,6 @@ __author__ = 'airead'
 principal = Principal()
 
 
-def get_user_permissions(user):
-    permissions = set()
-    groups = set()
-    for assoc in user.groups:
-        g = assoc.group
-        groups.add(g)
-    print 'user %s has groups: %s' % (user, groups)
-
-    for group in groups:
-        for assoc in group.permissions:
-            p = assoc.permission
-            permissions.add(p)
-    print 'user %s has permissions: %s' % (user, permissions)
-
-    return permissions
-
-
 @identity_loaded.connect
 def on_identity_loaded(sender, identity):
     # Set the identity user object

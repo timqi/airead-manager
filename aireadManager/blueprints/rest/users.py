@@ -2,6 +2,7 @@ import os
 from flask import abort, request, url_for
 from flask.blueprints import Blueprint
 from flask.ext.restful import Api, reqparse, fields, marshal_with
+from aireadManager.utils.principal import get_user_permissions
 from aireadManager.utils.restful import Resource
 from aireadManager.model.user import UserModel
 from aireadManager.model import db
@@ -27,7 +28,6 @@ user_fields = {
     'last_login': fields.DateTime,
     'date_joined': fields.DateTime,
 }
-
 
 class Users(Resource):
     @marshal_with(user_fields)
@@ -79,6 +79,21 @@ class User(Resource):
         db.session.query(UserModel).filter_by(id=uid).delete()
         db.session.commit()
         return {'code': Code.SUCCESS}
+
+
+class UserInfo(Resource):
+    def get(self, uid):
+        user = db.session.query(UserModel).filter_by(id=uid).first()
+        if not user:
+            return {'code': Code.NOT_FOUND}
+
+        perms = get_user_permissions(user)
+
+        ret = {
+            'id': user.id,
+            'groups': groups,
+            'permissions': perms,
+        }
 
 
 api.add_resource(Users, '/', endpoint='.users')
