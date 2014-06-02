@@ -21,5 +21,7 @@ setup(
         'flask',
         'mysql-python',
         'flask-sqlalchemy',
+        'Flask-Login',
+        'Flask-Principal',
     ],
 )

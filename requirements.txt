@@ -5,3 +5,5 @@ Flask-SQLAlchemy
 MySQL-Python
 Flask-Testing
 Flask-RESTful
+Flask-Login
+Flask-Principal
