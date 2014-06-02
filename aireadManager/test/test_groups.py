@@ -16,12 +16,10 @@ SuccessRet = {
 
 AdminGroup = {
     'name': u'管理组',
-    'tag': 'admin'
 }
 
 GuestGroup = {
     'name': u'客人组',
-    'tag': 'guest'
 }
 
 
@@ -51,13 +49,12 @@ class Test_Groups(TestCase):
     def test_groups_get(self):
         rv = self.client.get('/groups/')
         adminGroup, guestGroup = rv.json
-        assert_equal(adminGroup['tag'], AdminGroup['tag'])
-        assert_equal(guestGroup['tag'], GuestGroup['tag'])
+        assert_equal(adminGroup['name'], AdminGroup['name'])
+        assert_equal(guestGroup['name'], GuestGroup['name'])
 
     def test_groups_post(self):
         data = {
             'name': '超级管理员',
-            'tag': 'superAdmin'
         }
 
         rv = self.client.post('groups/?at=post', data=data)
@@ -69,13 +66,13 @@ class Test_Groups(TestCase):
 
     def test_group_put(self):
         data = {
-            'tag': 'stupidAdmin'
+            'name': '笨蛋管理员'
         }
         rv = self.client.post('groups/1?at=put', data=data)
         assert_equal(rv.json, SuccessRet)
 
         group = db.session.query(GroupModel).filter_by(id=1).one()
-        assert_equal(group.tag, 'stupidAdmin')
+        assert_equal(group.name, u'笨蛋管理员')
 
     def test_group_delete(self):
         rv = self.client.post('groups/1?at=delete')

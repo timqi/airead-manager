@@ -17,14 +17,12 @@ api = Api(blueprint)
 group_fields = {
     'id': fields.Integer,
     'name': fields.String,
-    'tag': fields.String
 }
 
 
 def get_parser(required=False):
     parser = reqparse.RequestParser()
     parser.add_argument('name', type=unicode, required=required)
-    parser.add_argument('tag', type=unicode, required=required)
 
     return parser
 

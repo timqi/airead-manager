@@ -13,8 +13,6 @@ class GroupModel(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
     #: 组名称
     name = db.Column(db.String(80), unique=True, nullable=False)
-    #: 标识
-    tag = db.Column(db.String(40), unique=True, nullable=True)
 
     users = db.relationship('UserGroupModel', backref='group')
     permission = db.relationship('GroupPermissionModel', backref='group')
