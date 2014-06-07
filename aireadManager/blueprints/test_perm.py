@@ -17,7 +17,7 @@ def gen_test_route(tag):
     generated route is: /test_tag
     """
 
-    route = '/test_' + tag
+    route = '/' + tag
 
     perm = getattr(Permissions, tag)
 

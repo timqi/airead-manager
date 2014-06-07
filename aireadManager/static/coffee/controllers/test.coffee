@@ -1,7 +1,7 @@
 define ['./base'], (indexCtlModule) ->
   moduleName = 'test'
   console.log "#{moduleName} init"
-  indexCtlModule.controller 'testCtl',
+  indexCtlModule.controller "#{moduleName}Ctl",
     [
       '$scope',
       ($scope) ->

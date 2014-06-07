@@ -5,6 +5,8 @@ define [
   'angular-ui'
   'angular-bootstrap'
   'angular-bootstrap-tpls'
+  'static/lib/ng-table'
+  'angular-pnotify'
   'smart-table'
   'dialogs'
 ], (angular, moduleNames) ->
@@ -14,7 +16,9 @@ define [
     'ngRoute',
     'ui.bootstrap'
     'smartTable.table'
+    'ngTable'
     'dialogs'
+    'ui.notify'
 
     # customs
     'controllers'

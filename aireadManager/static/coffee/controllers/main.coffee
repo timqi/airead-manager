@@ -1,8 +1,9 @@
 define [
   './base'
+  './test'
   './home'
   './userManager'
-  './test'
+  './test_perm'
 ], (indexCtlModule) ->
   moduleName = 'main'
 
@@ -36,7 +37,7 @@ define [
         $scope.name = 'Airead Fan'
         $scope.True = true
         $scope.treeDef = genTreeDef(modules)
-        $scope.navHeaderList = ['系统管理', '权限管理']
+        $scope.navHeaderList = ['系统管理', '权限管理', 'hide']
     ]
 
 

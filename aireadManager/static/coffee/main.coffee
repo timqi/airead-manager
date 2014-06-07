@@ -3,6 +3,7 @@ require.config
   baseUrl: '../../'
   paths:
     'jQuery': './static/bower_components/jquery/dist/jquery'
+    'jquery.pnotify': './static/lib/jquery.pnotify'
     'angular': './static/lib/angular'
     'angular-route': './static/bower_components/angular-route/angular-route'
     'angular-ui': './static/bower_components/angular-ui/build/angular-ui'
@@ -11,9 +12,11 @@ require.config
     'angular-sanitize': './static/lib/angular-sanitize.min'
     'angular-translate': './static/lib/angular-translate.min'
     'smart-table': './static/lib/Smart-Table.debug'
+    'angular-pnotify': './static/lib/pnotify'
     'dialogs': './static/lib/dialogs'
   shim:
     'jQuery': {'exports': 'jQuery'}
+    'jquery.pnotify': {'exports': 'jQuery'}
     'angular': {'exports': 'angular'}
     'angular-route': {deps: ['angular']}
     'angular-ui': {deps: ['angular']}
@@ -22,6 +25,7 @@ require.config
     'angular-sanitize': {deps: ['angular']}
     'angular-translate': {deps: ['angular']}
     'smart-table': {deps: ['angular']}
+    'angular-pnotify': {deps: ['angular', 'jquery.pnotify']}
     'dialogs': {deps: ['angular', 'angular-ui', 'angular-sanitize', 'angular-translate']}
 
 require ['jQuery', 'angular', 'static/js/routes'], ($, angular) ->

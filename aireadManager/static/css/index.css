@@ -1,5 +1,8 @@
 @import "lib/bootstrap.css";
 @import "lib/dialogs.css";
+@import "lib/ng-table.css";
+@import "lib/jquery.pnotify.default.css";
+@import "lib/jquery.pnotify.default.icons.css";
 
 .nav, .pagination, .carousel, .panel-title a {
     cursor: pointer;

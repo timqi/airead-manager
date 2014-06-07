@@ -1,5 +1,6 @@
 import os
-from flask import abort, request, url_for
+from flask import abort
+from flask import g
 from flask.blueprints import Blueprint
 from flask.ext.restful import Api, reqparse, fields, marshal_with
 from aireadManager.utils.restful import Resource
@@ -83,6 +84,9 @@ class User(Resource):
 
 class UserInfo(Resource):
     def get(self, uid):
+        if uid == 'now':
+            uid = g.identity.auth_user.user.id
+
         user = db.session.query(UserModel).filter_by(id=uid).first()
         if not user:
             return {'code': Code.NOT_FOUND}
@@ -90,7 +94,7 @@ class UserInfo(Resource):
         groups = user.get_groups()
         perms = user.get_permissions()
 
-        group_names = [g.name for g in groups]
+        group_names = [group.name for group in groups]
         perm_tags = [p.tag for p in perms]
 
         ret = {

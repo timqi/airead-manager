@@ -1,0 +1,37 @@
+<div class="item-main">
+    <div class="row">
+        <div class="col-md-2">
+            <h3>{{ pageTitle }}</h3>
+        </div>
+        <div class="col-md-10">
+            <button ng-click="testPerms()" class="btn btn-primary">测试</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="item-sub-main">
+            <loading></loading>
+            <table ng-table="tableParams" class="table table-striped table-bordered text-center" style="width: 600px;">
+                <tr ng-repeat="elem in $data">
+                    <td data-title="'权限名称'">{{ elem.name }}</td>
+                    <td data-title="'拥有权限'">
+                        <button ng-show="hasPerm(elem.tag)" class="btn btn-success btn-xs">
+                            <span class="glyphicon glyphicon-ok-sign"></span>
+                        </button>
+                        <button ng-hide="hasPerm(elem.tag)" class="btn btn-danger btn-xs">
+                            <span class="glyphicon glyphicon-remove-sign"></span>
+                        </button>
+                    </td>
+                    <td data-title="'测试结果'">
+                        <button ng-show="elem.tested && elem.testRet" class="btn btn-success btn-xs">
+                            <span class="glyphicon glyphicon-ok-sign"></span>
+                        </button>
+                        <button ng-show="elem.tested && !elem.testRet" class="btn btn-danger btn-xs">
+                            <span class="glyphicon glyphicon-remove-sign"></span>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
