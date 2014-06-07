@@ -1,16 +1,17 @@
 require.config
 #  urlArgs: "v=" +  (new Date()).getTime()
+  baseUrl: '../../'
   paths:
-    'jQuery': '../bower_components/jquery/dist/jquery'
-    'angular': '../lib/angular'
-    'angular-route': '../bower_components/angular-route/angular-route'
-    'angular-ui': '../bower_components/angular-ui/build/angular-ui'
-    'angular-bootstrap': '../bower_components/angular-bootstrap/ui-bootstrap'
-    'angular-bootstrap-tpls': '../bower_components/angular-bootstrap/ui-bootstrap-tpls'
-    'angular-sanitize': '../lib/angular-sanitize.min'
-    'angular-translate': '../lib/angular-translate.min'
-    'smart-table': '../lib/Smart-Table.debug'
-    'dialogs': '../lib/dialogs'
+    'jQuery': './static/bower_components/jquery/dist/jquery'
+    'angular': './static/lib/angular'
+    'angular-route': './static/bower_components/angular-route/angular-route'
+    'angular-ui': './static/bower_components/angular-ui/build/angular-ui'
+    'angular-bootstrap': './static/bower_components/angular-bootstrap/ui-bootstrap'
+    'angular-bootstrap-tpls': './static/bower_components/angular-bootstrap/ui-bootstrap-tpls'
+    'angular-sanitize': './static/lib/angular-sanitize.min'
+    'angular-translate': './static/lib/angular-translate.min'
+    'smart-table': './static/lib/Smart-Table.debug'
+    'dialogs': './static/lib/dialogs'
   shim:
     'jQuery': {'exports': 'jQuery'}
     'angular': {'exports': 'angular'}
@@ -23,6 +24,6 @@ require.config
     'smart-table': {deps: ['angular']}
     'dialogs': {deps: ['angular', 'angular-ui', 'angular-sanitize', 'angular-translate']}
 
-require ['jQuery', 'angular', './routes'], ($, angular) ->
+require ['jQuery', 'angular', 'static/js/routes'], ($, angular) ->
   $ ->
     angular.bootstrap document, ['app']
