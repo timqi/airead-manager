@@ -69,6 +69,12 @@ def permission_init():
     permissions = [
         {'name': u'管理员', 'tag': 'admin'},
         {'name': u'游客', 'tag': 'guest'},
+        {'name': u'数据库管理', 'tag': 'databaseManager'},
+        {'name': u'数据库设置', 'tag': 'databaseSetting'},
+        {'name': u'系统设置', 'tag': 'systemSetting'},
+        {'name': u'节假日', 'tag': 'holidayManager'},
+        {'name': u'用户管理', 'tag': 'userManager'},
+        {'name': u'管理组设置', 'tag': 'groupManager'},
     ]
 
     for p in permissions:

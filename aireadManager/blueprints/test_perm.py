@@ -3,7 +3,7 @@ import json
 import os
 from flask import Blueprint
 from aireadManager.utils.errors import Code
-from aireadManager.utils.permissions import Permissions
+from aireadManager.utils.permissions import Permissions, RoleList
 
 
 __author__ = 'airead'
@@ -12,22 +12,25 @@ path = os.path.splitext(os.path.basename(__file__))[0]
 blueprint = Blueprint(path, __name__, url_prefix='/' + path)
 
 
-@blueprint.route('/test_admin')
-@Permissions.admin.require(403)
-def test_admin():
-    ret = {
-        'code': Code.SUCCESS,
-        'desc': '你拥有 admin 权限'
-    }
+def gen_test_route(tag):
+    """
+    generated route is: /test_tag
+    """
 
-    return json.dumps(ret)
+    route = '/test_' + tag
+
+    perm = getattr(Permissions, tag)
+
+    @blueprint.route(route, endpoint=route)
+    @perm.require(403)
+    def test():
+        ret = {
+            'code': Code.SUCCESS,
+            'desc': '你拥有 %s 权限' % tag
+        }
+
+        return json.dumps(ret)
 
 
-@blueprint.route('/test_guest')
-def test_guest():
-    ret = {
-        'code': Code.SUCCESS,
-        'desc': '你拥有 guest 权限'
-    }
-
-    return json.dumps(ret)
+for role in RoleList:
+    gen_test_route(role)
