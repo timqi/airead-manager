@@ -1,5 +1,6 @@
 define ['./base'], (indexCtlModule) ->
-  console.log('test init')
+  moduleName = 'test'
+  console.log "#{moduleName} init"
   indexCtlModule.controller 'testCtl',
     [
       '$scope',
@@ -11,3 +12,10 @@ define ['./base'], (indexCtlModule) ->
           {firstName: 'Francoise', lastName: 'Frere', birthDate: new Date('1955-08-27'), balance: 42343, email: 'raymondef@gmail.com'}
         ];
     ]
+
+  ret =
+    group: 'hide'
+    item: 'test'
+    url: moduleName
+
+  return ret

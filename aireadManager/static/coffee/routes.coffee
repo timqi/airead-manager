@@ -5,9 +5,9 @@ define ['./mainApp'], (app) ->
       .when '/',
         templateUrl: 'templates/home.html', controller: 'homeCtl'
 
-    for name in app.moduleList
-      templateUrl = "templates/#{name}.html"
-      ctlName = "#{name}Ctl"
+    for m in app.moduleList
+      templateUrl = "templates/#{m.url}.html"
+      ctlName = "#{m.url}Ctl"
       $routeProvider
-        .when "/#{name}",
+        .when "/#{m.url}",
           templateUrl: templateUrl, controller: ctlName

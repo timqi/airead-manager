@@ -1,6 +1,7 @@
 define ['./base', 'dialogs'], (indexCtlModule) ->
-  console.log 'userManager init'
-  indexCtlModule.controller 'userManagerCtl',
+  moduleName = 'userManager'
+  console.log "#{moduleName} init"
+  indexCtlModule.controller "#{moduleName}Ctl",
     [
       '$scope'
       '$http'
@@ -58,17 +59,24 @@ define ['./base', 'dialogs'], (indexCtlModule) ->
         main()
     ]
 
-userManagerEditCtl = [
-  '$scope'
-  '$modalInstance'
-  'data'
-  ($scope, $modalInstance, data) ->
-    $scope.obj = data
+  userManagerEditCtl = [
+    '$scope'
+    '$modalInstance'
+    'data'
+    ($scope, $modalInstance, data) ->
+      $scope.obj = data
 
-    $scope.cancel = () ->
-      $modalInstance.dismiss 'cancel'
+      $scope.cancel = () ->
+        $modalInstance.dismiss 'cancel'
 
-    $scope.save = () ->
-      $modalInstance.close $scope.obj
+      $scope.save = () ->
+        $modalInstance.close $scope.obj
 
-]
+  ]
+
+  ret =
+    group: '权限管理'
+    item: '用户管理'
+    url: moduleName
+
+  return ret

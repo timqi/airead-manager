@@ -1,6 +1,6 @@
 define [
   'angular'
-  'static/js/controllers/index'
+  'static/js/controllers/main'
   'angular-route'
   'angular-ui'
   'angular-bootstrap'

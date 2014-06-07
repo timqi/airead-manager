@@ -18,8 +18,8 @@
             <accordion close-others="oneAtATime">
                 <accordion-group ng-repeat="name in navHeaderList" heading="{{ name }}" is-open="True">
                     <ul class="f-nav-list">
-                        <li ng-repeat="(name, url) in treeDef[name]">
-                            <a ng-href="#/{{ url }}">{{ name }}</a>
+                        <li ng-repeat="(name, item) in treeDef[name]">
+                            <a ng-href="#/{{ item.url }}">{{ item.name }}</a>
                         </li>
                     </ul>
                 </accordion-group>

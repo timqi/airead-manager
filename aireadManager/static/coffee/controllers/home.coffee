@@ -1,4 +1,5 @@
 define ['./base'], (indexCtlModule) ->
+  moduleName = 'home'
   console.log('home init')
   indexCtlModule.controller 'homeCtl',
     [
@@ -6,3 +7,10 @@ define ['./base'], (indexCtlModule) ->
       ($scope) ->
         $scope.pageTitle = 'home'
     ]
+
+  ret =
+    group: 'hide'
+    item: 'home'
+    url: moduleName
+
+  return ret
