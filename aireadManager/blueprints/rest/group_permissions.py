@@ -75,5 +75,18 @@ class GroupPermission(Resource):
         return {'code': Code.SUCCESS}
 
 
+class GroupPermissionDelete(Resource):
+    def post(self):
+        abort(405)
+
+    def delete(self, group_id, perm_id):
+        db.session.query(GroupPermissionModel).filter_by(
+            group_id=group_id).filter_by(permission_id=perm_id).delete()
+        db.session.commit()
+        return {'code': Code.SUCCESS}
+
+
+
 api.add_resource(GroupPermissions, '/', endpoint='.group_permissions')
 api.add_resource(GroupPermission, '/<string:gpid>', endpoint='.group_permission')
+api.add_resource(GroupPermissionDelete, '/<int:group_id>/<int:perm_id>', endpoint='./user_group_delete')

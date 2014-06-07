@@ -19,3 +19,11 @@ class GroupModel(db.Model):
 
     def __repr__(self):
         return '<Group %r>' % self.id
+
+    def get_permissions(self):
+        permissions = set()
+        for assoc in self.permissions:
+            p = assoc.permission
+            permissions.add(p)
+
+        return permissions

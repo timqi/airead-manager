@@ -43,6 +43,7 @@ class Groups(Resource):
 
         ret = {
             'code': Code.SUCCESS,
+            'id': group.id,
             'uri': api.url_for(Group, gid=group.id)
         }
 
@@ -75,7 +76,33 @@ class Group(Resource):
         return {'code': Code.SUCCESS}
 
 
+def formatGroup(group):
+    perms = group.get_permissions()
+    perm_tags = [p.tag for p in perms]
+    perm_names = [p.name for p in perms]
+
+    _u = {
+        'id': group.id,
+        'name': group.name,
+        'permission_tags': perm_tags,
+        'permission_names': perm_names
+    }
+
+    return _u
+
+
+class GroupInfos(Resource):
+    def get(self):
+        groups = db.session.query(GroupModel).all()
+
+        ret = []
+        for group in groups:
+            _g = formatGroup(group)
+            ret.append(_g)
+
+        return ret
+
+
 api.add_resource(Groups, '/', endpoint='.groups')
 api.add_resource(Group, '/<string:gid>', endpoint='.group')
-
-
+api.add_resource(GroupInfos, '/infos/', endpoint='.group_infos')
