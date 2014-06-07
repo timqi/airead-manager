@@ -1,4 +1,8 @@
-define ['./base', 'dialogs'], (indexCtlModule) ->
+define [
+  './base'
+  'jQuery'
+  'dialogs'
+], (indexCtlModule, $) ->
   moduleName = 'userManager'
   console.log "#{moduleName} init"
   indexCtlModule.controller "#{moduleName}Ctl",
@@ -36,14 +40,14 @@ define ['./base', 'dialogs'], (indexCtlModule) ->
           url = '/users/infos/'
           console.log 'get %s', url
           $http.get url
-            .success (data) ->
+          .success (data) ->
               console.log 'receive data: ', data
 
               $scope.objs = data
               $scope.userParams.reload()
-            .error (data) ->
+          .error (data) ->
               console.log 'get %s failed %s', url, data
-            .finally () ->
+          .finally () ->
               $scope.loading = false
 
         $scope.add = () ->
@@ -54,14 +58,32 @@ define ['./base', 'dialogs'], (indexCtlModule) ->
           dia.result.then (obj) ->
             console.log 'add obj', obj
             $http.post '/users/', obj
-              .success (data) ->
+            .success (data) ->
                 console.log('add success ', data)
-              .error (data) ->
+            .error (data) ->
                 console.log('add failed', data)
-              .finally () ->
+            .finally () ->
                 $scope.query()
           .finally () ->
-            $scope.addDisabled = false
+              $scope.addDisabled = false
+
+        $scope.edit = (user) ->
+          $scope.addDisabled = true
+          dia = $dialogs.create 'templates/userManagerEdit.html',
+            userManagerEditCtl, user, {}
+
+          dia.result.then (obj) ->
+            console.log 'edit obj', obj
+            url = "/users/#{user.id}?at=put"
+            $http.post url, $.param(obj)
+            .success (data) ->
+                console.log 'modify user return ', data
+                notificationService.success '添加用户成功'
+            .error (data) ->
+                console.log 'modify user reutrn ', data
+                notificationService.notice '添加用户失败'
+            .finally () ->
+                $scope.addDisabled = false
 
         main()
     ]
