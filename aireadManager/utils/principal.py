@@ -14,20 +14,10 @@ def on_identity_loaded(sender, identity):
     print 'identity.auth_user', identity.auth_user.user
 
     user = current_user.user
-    permissions = get_user_permissions(user)
+    permissions = user.get_permissions()
 
-    ## Add the UserNeed to the identity
-    #if hasattr(current_user, 'id'):
-    #    identity.provides.add(UserNeed(current_user.id))
-    #
-    ## Assuming the User model has a list of roles, update the
-    ## identity with the roles that the user provides
-    #if hasattr(current_user, 'roles'):
-    #    for role in current_user.roles:
-    #        identity.provides.add(RoleNeed(role.name))
-    #
-    ## Assuming the User model has a list of posts the user
-    ## has authored, add the needs to the identity
-    #if hasattr(current_user, 'posts'):
-    #    for post in current_user.posts:
-    #        identity.provides.add(EditBlogPostNeed(unicode(post.id)))
+    tags = [p.tag for p in permissions]
+    print 'tags: ', tags
+
+    for tag in tags:
+        identity.provides.add(RoleNeed(tag))

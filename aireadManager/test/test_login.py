@@ -103,3 +103,6 @@ class Test_users(TestCase):
         }
         rv = self.client.post('/login/', data=data)
         assert_equal(rv.json['code'], Code.SUCCESS)
+
+        rv = self.client.get('/login/cur_user')
+        print rv.data

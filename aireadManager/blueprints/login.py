@@ -57,4 +57,5 @@ def login():
 @blueprint.route('/cur_user')
 def cur_user():
     print 'cur_user user: ', g.identity.auth_user.user.id
+    print 'cur_user provides', g.identity.provides
     return g.identity.auth_user.user.username
