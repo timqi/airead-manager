@@ -3,6 +3,7 @@ define [
   './test'
   './home'
   './userManager'
+  './userGroup'
   './test_perm'
 ], (indexCtlModule) ->
   moduleName = 'main'

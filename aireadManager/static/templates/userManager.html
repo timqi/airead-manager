@@ -8,24 +8,26 @@
         </div>
     </div>
     <div class="row">
-        <table ng-table="userParams" class="table table-striped table-bordered text-center">
-            <tr ng-repeat="elem in $data">
-                <td data-title="'用户ID'">{{ elem.id}}</td>
-                <td data-title="'用户名'">{{ elem.username}}</td>
-                <td data-title="'email'">{{ elem.email }}</td>
-                <td data-title="'用户组'">{{ elem.group_names }}</td>
-                <td data-title="'编辑'">
-                    <button ng-click="edit(elem)" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-edit"></span>
-                    </button>
-                </td>
-                <td data-title="'删除'">
-                    <button class="btn btn-danger btn-xs">
-                        <span class="glyphicon glyphicon-remove-sign"></span>
-                    </button>
-                </td>
-            </tr>
-        </table>
+        <div class="item-sub-main">
+            <table ng-table="userParams" class="table table-striped table-bordered text-center">
+                <tr ng-repeat="elem in $data">
+                    <td data-title="'用户ID'">{{ elem.id}}</td>
+                    <td data-title="'用户名'">{{ elem.username}}</td>
+                    <td data-title="'email'">{{ elem.email }}</td>
+                    <td data-title="'用户组'">{{ elem.group_names }}</td>
+                    <td data-title="'编辑'">
+                        <button ng-click="edit(elem)" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                    </td>
+                    <td data-title="'删除'">
+                        <button class="btn btn-danger btn-xs">
+                            <span class="glyphicon glyphicon-remove-sign"></span>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
 
