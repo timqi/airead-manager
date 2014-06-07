@@ -91,5 +91,5 @@ class Test_users(TestCase):
         assert_equal(user['username'], USER1['username'])
 
     def test_user_info_get(self):
-        rv = self.client.get('/users/info/1')
+        rv = self.client.get('/users/infos/1')
         print rv.json

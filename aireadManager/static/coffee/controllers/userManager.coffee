@@ -6,34 +6,41 @@ define ['./base', 'dialogs'], (indexCtlModule) ->
       '$scope'
       '$http'
       '$dialogs'
-      ($scope, $http, $dialogs) ->
+      'ngTableParams'
+      'notificationService'
+      ($scope, $http, $dialogs, ngTableParams, notificationService) ->
         $scope.pageTitle = '用户管理'
 
-        $scope.columnCollection = [
-            {label: 'username', map: 'username'},
-            {label: 'Email', map: 'email', type: 'email', isEditable: true}
-        ];
+        $scope.objs = []
+
+        $scope.userParams = new ngTableParams {
+          page: 1
+          count: 20
+        }, {
+          counts: [10, 20, 50],
+          total: $scope.objs.length,
+          getData: ($defer, params) ->
+            tabData = $scope.objs;
+            tabElems = tabData.slice((params.page() - 1) * params.count(), params.page() * params.count());
+            params.total tabElems.length
+            $defer.resolve tabElems
+        }
 
         main = () ->
           $scope.query()
 
         $scope.query = () ->
           $scope.loading = true
-          $scope.userCollection = []
+          $scope.objs = []
 
-          url = '/users/'
+          url = '/users/infos/'
           console.log 'get %s', url
           $http.get url
             .success (data) ->
               console.log 'receive data: ', data
 
-              for record in data
-                user =
-                  username: record.username
-                  email: record.email
-
-                console.log 'user', user
-                $scope.userCollection.push user
+              $scope.objs = data
+              $scope.userParams.reload()
             .error (data) ->
               console.log 'get %s failed %s', url, data
             .finally () ->

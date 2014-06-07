@@ -82,6 +82,36 @@ class User(Resource):
         return {'code': Code.SUCCESS}
 
 
+def formatUser(user):
+    groups = user.get_groups()
+    perms = user.get_permissions()
+
+    group_names = [group.name for group in groups]
+    perm_tags = [p.tag for p in perms]
+
+    _u = {
+        'id': user.id,
+        'username': user.username,
+        'email': user.email,
+        'group_names': group_names,
+        'permission_tags': perm_tags
+    }
+
+    return _u
+
+
+class UserInfos(Resource):
+    def get(self):
+        users = db.session.query(UserModel).all()
+
+        ret = []
+        for user in users:
+            _u = formatUser(user)
+            ret.append(_u)
+
+        return ret
+
+
 class UserInfo(Resource):
     def get(self, uid):
         if uid == 'now':
@@ -91,21 +121,12 @@ class UserInfo(Resource):
         if not user:
             return {'code': Code.NOT_FOUND}
 
-        groups = user.get_groups()
-        perms = user.get_permissions()
-
-        group_names = [group.name for group in groups]
-        perm_tags = [p.tag for p in perms]
-
-        ret = {
-            'id': user.id,
-            'group_names': group_names,
-            'permission_tags': perm_tags
-        }
+        ret = formatUser(user)
 
         return ret
 
 
 api.add_resource(Users, '/', endpoint='.users')
 api.add_resource(User, '/<string:uid>', endpoint='.user')
-api.add_resource(UserInfo, '/info/<string:uid>', endpoint='.user_info')
+api.add_resource(UserInfos, '/infos/', endpoint='.user_infos')
+api.add_resource(UserInfo, '/infos/<string:uid>', endpoint='.user_info')

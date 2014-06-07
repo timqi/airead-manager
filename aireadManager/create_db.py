@@ -24,12 +24,28 @@ def admin_init():
         'date_joined': datetime.now()
     }
 
-    u = db.session.query(UserModel).filter_by(username='admin').first()
-    if u:
-        return None
+    guest = {
+        'username': 'guest',
+        'first_name': u'人',
+        'last_name': u'客',
+        'email': 'guest@some.com',
+        'password': 'guest',
+        'is_staff': False,
+        'is_active': False,
+        'is_superuser': False,
+        'last_login': datetime.now(),
+        'date_joined': datetime.now()
+    }
 
-    user = UserModel(**admin)
-    db.session.add(user)
+    users = [admin, guest]
+
+    for user in users:
+        u = db.session.query(UserModel).filter_by(username=user['username']).first()
+        if u:
+            continue
+
+        obj = UserModel(**user)
+        db.session.add(obj)
     db.session.commit()
 
 

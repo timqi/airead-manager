@@ -13,3 +13,7 @@
     line-height: 34px;
     margin: 0 0 10px 0;
 }
+
+thead {
+    background-color: #FEE;
+}

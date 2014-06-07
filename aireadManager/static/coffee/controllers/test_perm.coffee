@@ -24,13 +24,13 @@ define [
           total: $scope.permissions.length,
           getData: ($defer, params) ->
             tabData = $scope.permissions;
-            $scope.tabElems = tabData.slice((params.page() - 1) * params.count(), params.page() * params.count());
-            params.total($scope.tabElems.length)
-            $defer.resolve($scope.tabElems)
+            tabElems = tabData.slice((params.page() - 1) * params.count(), params.page() * params.count());
+            params.total(tabElems.length)
+            $defer.resolve(tabElems)
         }
 
         getUserPermissions = () ->
-          url = '/users/info/now'
+          url = '/users/infos/now'
           $http.get(url)
             .success (data) ->
               console.log 'recevice data: ', data
