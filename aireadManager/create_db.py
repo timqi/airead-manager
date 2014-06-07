@@ -50,15 +50,17 @@ def admin_init():
 
 
 def group_init():
-    group = {
-        'name': u'管理组'
-    }
+    groups = [
+        {'name': u'管理组'},
+        {'name': u'客人组'}
+    ]
 
-    existed = db.session.query(GroupModel).filter_by(name=group['name']).first()
-    if not existed:
-        g = GroupModel(**group)
-        db.session.add(g)
-        db.session.commit()
+    for group in groups:
+        existed = db.session.query(GroupModel).filter_by(name=group['name']).first()
+        if not existed:
+            g = GroupModel(**group)
+            db.session.add(g)
+            db.session.commit()
 
 
 def user_group_init():

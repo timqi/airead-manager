@@ -1,9 +1,10 @@
 define [
   './base'
   'jQuery'
-  'angular'
+  'static/lib/async'
+  'static/lib/lodash.min'
   'dialogs'
-], (indexCtlModule, $, angular) ->
+], (indexCtlModule, $, async, _) ->
   moduleName = 'userManager'
   console.log "#{moduleName} init"
   indexCtlModule.controller "#{moduleName}Ctl",
@@ -51,6 +52,12 @@ define [
           .finally () ->
               $scope.loading = false
 
+        getGroupId = (name, groups) ->
+          for group in groups
+            if group.name == name
+              return group.id
+          return null
+
         $scope.add = () ->
           user =
             'username': '用户名'
@@ -80,23 +87,64 @@ define [
               $scope.addDisabled = false
 
         $scope.edit = (user) ->
+          originGroups = (group for group in user.group_names)
+          console.log 'origin groups: ', originGroups
+
           $scope.addDisabled = true
           dia = $dialogs.create 'templates/userManagerEdit.html',
             userManagerEditCtl, user, {}
 
           dia.result.then (obj) ->
+            user = obj.user
+            groups = obj.groups
             console.log 'edit obj', obj
             url = "/users/#{user.id}?at=put"
-            $http.post url, $.param(obj)
+            $http.post url, $.param(user)
             .success (data) ->
                 console.log 'modify user return ', data
-                notificationService.success '修改用户成功'
+                needAddGroupNames = _.difference user.group_names, originGroups
+                needAddGroupIds = (getGroupId(name, groups) for name in needAddGroupNames)
+                console.log 'need add groups ', needAddGroupNames, needAddGroupIds
+
+                needRemoveGroupNames = _.difference originGroups, user.group_names
+                needRemoveGroupIds = (getGroupId(name, groups) for name in needRemoveGroupNames)
+                console.log 'need remove groups ', needRemoveGroupNames, needRemoveGroupIds
+
+                async.forEachSeries needAddGroupIds, (gid, cb) ->
+                  url = '/user_groups/'
+                  data =
+                    user_id: user.id
+                    group_id: gid
+                  console.log "post #{url}, data: ", data
+                  $http.post url, $.param(data)
+                  .success (data) ->
+                      console.log "add group #{gid} success"
+                  .error (data) ->
+                      errmsg = "add group #{gid} failed"
+                      console.log errmsg, data
+                      notificationService.notice errmsg
+                  .finally ()->
+                      cb()
+                , () ->
+                  async.forEachSeries needRemoveGroupIds, (gid, cb) ->
+                    url = "/user_groups/#{user.id}/#{gid}?at=delete"
+                    $http.post url
+                    .success (data) ->
+                        console.log "delete group #{gid} success"
+                    .error (data) ->
+                        errmsg = "delete group #{gid} failed"
+                        console.log errmsg, data
+                        notificationService.notice errmsg
+                    .finally () ->
+                        cb()
+                  , () ->
+                    notificationService.success '修改用户成功'
+                    $scope.userParams.reload()
+                    $scope.addDisabled = false
+                    $scope.query()
             .error (data) ->
                 console.log 'modify user reutrn ', data
                 notificationService.notice '修改用户失败'
-            .finally () ->
-                $scope.addDisabled = false
-                $scope.query()
 
         main()
     ]
@@ -128,8 +176,10 @@ define [
         $modalInstance.dismiss 'cancel'
 
       $scope.save = () ->
-        $modalInstance.close $scope.obj
-
+        ret =
+          user: $scope.obj
+          groups: $scope.groups
+        $modalInstance.close ret
   ]
 
   ret =

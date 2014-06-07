@@ -77,5 +77,17 @@ class UserGroup(Resource):
         return {'code': Code.SUCCESS}
 
 
+class UserGroupDelete(Resource):
+    def post(self):
+        abort(405)
+
+    def delete(self, user_id, group_id):
+        db.session.query(UserGroupModel).filter_by(
+            user_id=user_id).filter_by(group_id=group_id).delete()
+        db.session.commit()
+        return {'code': Code.SUCCESS}
+
+
 api.add_resource(UserGroups, '/', endpoint='.user_groups')
 api.add_resource(UserGroup, '/<string:ugid>', endpoint='.user_group')
+api.add_resource(UserGroupDelete, '/<int:user_id>/<int:group_id>', endpoint='./user_group_delete')

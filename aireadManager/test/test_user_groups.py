@@ -91,3 +91,12 @@ class Test_UserGroups(TestCase):
         rv = self.client.get('/user_groups/1')
         assert_equal(rv.json['user_id'], UserGroup1['user_id'])
         assert_equal(rv.json['group_id'], UserGroup1['group_id'])
+
+    def test_group_delete_by_user_group_id(self):
+        rv = self.client.post('/user_groups/1/2?at=delete')
+        assert_equal(rv.json, SuccessRet)
+
+        groups = db.session.query(UserGroupModel).all()
+        assert_equal(len(groups), 1)
+        group = groups[0]
+        assert_equal(group.group_id, UserGroup2['group_id'])
