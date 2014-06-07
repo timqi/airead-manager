@@ -76,13 +76,36 @@ define [
 
           dia.result.then (obj) ->
             console.log 'add obj', obj
-            $http.post '/users/', $.param(obj)
+            user = obj.user
+            groups = obj.groups
+            needAddGroupIds = (getGroupId(name, groups) for name in user.group_names)
+
+            $http.post '/users/', $.param(user)
             .success (data) ->
                 console.log('add success ', data)
+                uid = data.id
+                async.forEachSeries needAddGroupIds, (gid, cb) ->
+                  url = '/user_groups/'
+                  data =
+                    user_id: uid
+                    group_id: gid
+                  console.log "post #{url}, data: ", data
+                  $http.post url, $.param(data)
+                  .success (data) ->
+                      console.log "add group #{gid} success"
+                  .error (data) ->
+                      errmsg = "add group #{gid} failed"
+                      console.log errmsg, data
+                      notificationService.notice errmsg
+                  .finally ()->
+                      cb()
+                , () ->
+                  notificationService.success '修改用户成功'
+                  $scope.userParams.reload()
+                  $scope.addDisabled = false
+                  $scope.query()
             .error (data) ->
                 console.log('add failed', data)
-            .finally () ->
-                $scope.query()
           .finally () ->
               $scope.addDisabled = false
 

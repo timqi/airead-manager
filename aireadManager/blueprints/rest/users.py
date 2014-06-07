@@ -63,7 +63,11 @@ class Users(Resource):
         db.session.add(user)
         db.session.commit()
 
-        return {'code': Code.SUCCESS, 'uri': api.url_for(User, uid=user.id)}
+        return {
+            'code': Code.SUCCESS,
+            'id': user.id,
+            'uri': api.url_for(User, uid=user.id)
+        }
 
 
 class User(Resource):

@@ -67,7 +67,7 @@ define [
           dia.result.then (obj) ->
             group = obj.group
             perms = obj.perms
-            needAddPermIds = (perm.id for perm in perms)
+            needAddPermIds = (getPermId(name, perms) for name in group.permission_names)
             console.log 'need add perms ', perms, needAddPermIds
             console.log 'add obj', obj
             $http.post '/groups/', $.param(group)
@@ -89,15 +89,13 @@ define [
                       notificationService.notice errmsg
                   .finally ()->
                       cb()
-                  , () ->
-                    notificationService.success '修改组成功'
-                    $scope.tableParams.reload()
-                    $scope.addDisabled = false
-                    $scope.query()
+                , () ->
+                  notificationService.success '修改组成功'
+                  $scope.tableParams.reload()
+                  $scope.addDisabled = false
+                  $scope.query()
             .error (data) ->
                 console.log('add failed', data)
-            .finally () ->
-                $scope.query()
           .finally () ->
               $scope.addDisabled = false
 
