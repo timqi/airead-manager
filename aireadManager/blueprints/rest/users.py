@@ -1,5 +1,5 @@
 import os
-from flask import abort
+from flask import abort, request
 from flask import g
 from flask.blueprints import Blueprint
 from flask.ext.restful import Api, reqparse, fields, marshal_with
@@ -7,7 +7,8 @@ from aireadManager.utils.restful import Resource
 from aireadManager.model.user import UserModel
 from aireadManager.model import db
 from aireadManager.utils.errors import Code
-from aireadManager.utils.util import datetime_type
+from aireadManager.utils.util import datetime_type, get_string_from_datetime
+from datetime import datetime
 
 __author__ = 'airead'
 
@@ -36,18 +37,22 @@ class Users(Resource):
         return UserModel.query.all()
 
     def post(self):
+        print request.form
         parser = reqparse.RequestParser()
-        parser.add_argument('username', type=str, required=True)
-        parser.add_argument('first_name', type=str, required=True)
-        parser.add_argument('last_name', type=str, required=True)
+        parser.add_argument('username', type=unicode, required=True)
+        parser.add_argument('first_name', type=unicode, required=True)
+        parser.add_argument('last_name', type=unicode, required=True)
         parser.add_argument('email', type=str, required=True)
         parser.add_argument('password', type=str, required=True)
         parser.add_argument('is_staff', type=bool, required=True)
         parser.add_argument('is_active', type=bool, required=True)
         parser.add_argument('is_superuser', type=bool, required=True)
-        parser.add_argument('last_login', type=datetime_type, required=True)
-        parser.add_argument('date_joined', type=datetime_type, required=True)
+        parser.add_argument('last_login', type=datetime_type)
         args = parser.parse_args()
+
+        args['date_joined'] = datetime.now()
+        if not args['last_login']:
+            args['last_login'] = datetime.now()
 
         user = UserModel(**args)
         db.session.add(user)
@@ -66,7 +71,7 @@ class User(Resource):
 
     def put(self, uid):
         parser = reqparse.RequestParser()
-        parser.add_argument('username', type=str)
+        parser.add_argument('username', type=unicode)
         parser.add_argument('password', type=str)
         args = parser.parse_args()
 
@@ -92,7 +97,15 @@ def formatUser(user):
     _u = {
         'id': user.id,
         'username': user.username,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
         'email': user.email,
+        'password': user.password,
+        'is_staff': user.is_staff,
+        'is_active': user.is_active,
+        'is_superuser': user.is_superuser,
+        'last_login': get_string_from_datetime(user.last_login),
+        'date_joined': get_string_from_datetime(user.date_joined),
         'group_names': group_names,
         'permission_tags': perm_tags
     }

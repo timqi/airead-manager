@@ -8,6 +8,7 @@ define [
   'static/lib/ng-table'
   'angular-pnotify'
   'smart-table'
+  'angular-select2'
   'dialogs'
 ], (angular, moduleNames) ->
   console.log('mainApp init')
@@ -19,10 +20,17 @@ define [
     'ngTable'
     'dialogs'
     'ui.notify'
+    'ui.select2'
 
     # customs
     'controllers'
   ]
 
   app.moduleList = moduleNames
+
+  app.config [
+    '$httpProvider'
+    ($httpProvider) ->
+      $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+  ]
   app

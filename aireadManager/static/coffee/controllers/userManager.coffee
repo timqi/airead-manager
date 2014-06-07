@@ -1,8 +1,9 @@
 define [
   './base'
   'jQuery'
+  'angular'
   'dialogs'
-], (indexCtlModule, $) ->
+], (indexCtlModule, $, angular) ->
   moduleName = 'userManager'
   console.log "#{moduleName} init"
   indexCtlModule.controller "#{moduleName}Ctl",
@@ -51,13 +52,24 @@ define [
               $scope.loading = false
 
         $scope.add = () ->
+          user =
+            'username': '用户名'
+            'first_name': '名字'
+            'last_name': '姓',
+            'email': 'e@some.com'
+            'password': 'password'
+            'is_staff': true,
+            'is_active': true,
+            'is_superuser': false,
+            'group_names': [],
+
           $scope.addDisabled = true
           dia = $dialogs.create 'templates/userManagerEdit.html',
-            userManagerEditCtl, {}, {}
+            userManagerEditCtl, user, {}
 
           dia.result.then (obj) ->
             console.log 'add obj', obj
-            $http.post '/users/', obj
+            $http.post '/users/', $.param(obj)
             .success (data) ->
                 console.log('add success ', data)
             .error (data) ->
@@ -78,12 +90,13 @@ define [
             $http.post url, $.param(obj)
             .success (data) ->
                 console.log 'modify user return ', data
-                notificationService.success '添加用户成功'
+                notificationService.success '修改用户成功'
             .error (data) ->
                 console.log 'modify user reutrn ', data
-                notificationService.notice '添加用户失败'
+                notificationService.notice '修改用户失败'
             .finally () ->
                 $scope.addDisabled = false
+                $scope.query()
 
         main()
     ]
@@ -91,9 +104,25 @@ define [
   userManagerEditCtl = [
     '$scope'
     '$modalInstance'
+    '$http'
+    'notificationService'
     'data'
-    ($scope, $modalInstance, data) ->
+    ($scope, $modalInstance, $http, notificationService, data) ->
       $scope.obj = data
+      $scope.groups = []
+
+      queryGroups = () ->
+        url = '/groups/'
+        console.log url
+        $http.get url
+        .success (data) ->
+            console.log 'receive groups: ', data
+            $scope.groups = data
+        .error (data) ->
+            console.log 'get groups failed: ', data
+            notificationService.notice '获取用户组出错'
+
+      queryGroups()
 
       $scope.cancel = () ->
         $modalInstance.dismiss 'cancel'

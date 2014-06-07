@@ -3,6 +3,8 @@
 @import "lib/ng-table.css";
 @import "lib/jquery.pnotify.default.css";
 @import "lib/jquery.pnotify.default.icons.css";
+@import "lib/select2.css";
+@import "lib/select2-bootstrap.css";
 
 .nav, .pagination, .carousel, .panel-title a {
     cursor: pointer;
