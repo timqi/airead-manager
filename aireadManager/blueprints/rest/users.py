@@ -7,7 +7,7 @@ from aireadManager.utils.restful import Resource
 from aireadManager.model.user import UserModel
 from aireadManager.model import db
 from aireadManager.utils.errors import Code
-from aireadManager.utils.util import datetime_type, get_string_from_datetime
+from aireadManager.utils.util import datetime_type, get_string_from_datetime, bool_type
 from datetime import datetime
 
 __author__ = 'airead'
@@ -31,6 +31,21 @@ user_fields = {
 }
 
 
+def get_parser(required=False):
+    parser = reqparse.RequestParser()
+    parser.add_argument('username', type=unicode, required=required)
+    parser.add_argument('first_name', type=unicode, required=required)
+    parser.add_argument('last_name', type=unicode, required=required)
+    parser.add_argument('email', type=str, required=required)
+    parser.add_argument('password', type=str, required=required)
+    parser.add_argument('is_staff', type=bool_type, required=required)
+    parser.add_argument('is_active', type=bool_type, required=required)
+    parser.add_argument('is_superuser', type=bool_type, required=required)
+    parser.add_argument('last_login', type=datetime_type)
+
+    return parser
+
+
 class Users(Resource):
     @marshal_with(user_fields)
     def get(self):
@@ -38,17 +53,7 @@ class Users(Resource):
 
     def post(self):
         print request.form
-        parser = reqparse.RequestParser()
-        parser.add_argument('username', type=unicode, required=True)
-        parser.add_argument('first_name', type=unicode, required=True)
-        parser.add_argument('last_name', type=unicode, required=True)
-        parser.add_argument('email', type=str, required=True)
-        parser.add_argument('password', type=str, required=True)
-        parser.add_argument('is_staff', type=bool, required=True)
-        parser.add_argument('is_active', type=bool, required=True)
-        parser.add_argument('is_superuser', type=bool, required=True)
-        parser.add_argument('last_login', type=datetime_type)
-        args = parser.parse_args()
+        args = get_parser(required=True).parse_args()
 
         args['date_joined'] = datetime.now()
         if not args['last_login']:
@@ -70,12 +75,10 @@ class User(Resource):
         abort(405)
 
     def put(self, uid):
-        parser = reqparse.RequestParser()
-        parser.add_argument('username', type=unicode)
-        parser.add_argument('password', type=str)
-        args = parser.parse_args()
+        args = get_parser().parse_args()
 
         set_data = {key: val for key, val in args.iteritems() if val is not None}
+        print 'set_data', set_data
 
         db.session.query(UserModel).filter_by(id=uid).update(set_data)
         db.session.commit()

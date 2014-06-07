@@ -13,3 +13,7 @@ def get_string_from_datetime(dateobj, date_format='%Y/%m/%d %H:%M:%S'):
 
 def datetime_type(datestr):
     return get_datetime_from_string(datestr)
+
+
+def bool_type(val):
+    return val.lower() == 'true'
