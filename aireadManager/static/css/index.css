@@ -1,3 +1,6 @@
+@import "lib/bootstrap.css";
+@import "lib/dialogs.css";
+
 .nav, .pagination, .carousel, .panel-title a {
     cursor: pointer;
 }

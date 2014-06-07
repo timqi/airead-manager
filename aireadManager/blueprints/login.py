@@ -24,8 +24,10 @@ def login():
         return redirect('static/login.html')
 
     parser = reqparse.RequestParser()
-    parser.add_argument('username', type=str, required=True)
-    parser.add_argument('password', type=str, required=True)
+    parser.add_argument('username', type=unicode, required=True)
+    parser.add_argument('password', type=unicode, required=True)
+    parser.add_argument('isweb', type=bool)
+    parser.add_argument('remeberMe', type=bool)
     args = parser.parse_args()
 
     print 'login args:', args
@@ -34,6 +36,8 @@ def login():
         username=args['username']
     ).filter_by(password=args['password']).first()
     if not user:
+        if args['isweb']:
+            return redirect('static/login.html?err=no_match')
         ret = {
             'code': Code.AUTH_FAILED,
             'flash': '帐号密码错误，请重新登陆'
@@ -46,6 +50,9 @@ def login():
     login_user(auth_user)
 
     identity_changed.send(current_app._get_current_object(), identity=Identity(auth_user.user.id))
+
+    if args['isweb']:
+        return redirect('static/index.html')
 
     ret = {
         'code': Code.SUCCESS,
