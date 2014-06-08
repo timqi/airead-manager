@@ -5,16 +5,19 @@
     <title>Manager</title>
 </head>
 <body ng-controller="mainCtl">
-<header id="header">
-    <div class="container">
-        <div class="row">
-            <h1><a href="index.html">Manager</a></h1>
-        </div>
-    </div>
-</header>
 <div class="container">
     <div class="row">
-        <div class="col-md-2 border">
+        <div class="navbar navbar-default featured-nav navbar-collapse collapse" role="navigation">
+            <div class="navbar-header">
+                <a class="navbar-brand" ng-href="index.html">Manager</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a ng-href="/login/">登陆</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 border" style="padding-left: 0;">
             <accordion close-others="oneAtATime">
                 <accordion-group ng-repeat="name in navHeaderList" heading="{{ name }}" is-open="True">
                     <ul class="f-nav-list">
