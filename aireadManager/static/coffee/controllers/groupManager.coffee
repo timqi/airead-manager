@@ -44,8 +44,12 @@ define [
 
               $scope.objs = data
               $scope.tableParams.reload()
-          .error (data) ->
-              console.log 'get %s failed %s', url, data
+          .error (err, status) ->
+              console.log 'get %s failed ', url, err
+              if status == 403
+                notificationService.notice '没有权限'
+              else
+                notificationService.notice '未知错误'
           .finally () ->
               $scope.loading = false
 

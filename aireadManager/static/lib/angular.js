@@ -21446,7 +21446,7 @@ var styleDirective = valueFn({
 
   if (window.angular.bootstrap) {
     //AngularJS is already loaded, so we can return here...
-    console.log('WARNING: Tried to load angular more than once.', data);
+    console.log('WARNING: Tried to load angular more than once.');
     return;
   }
 

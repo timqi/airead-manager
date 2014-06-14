@@ -141,7 +141,6 @@ class UserInfos(Resource):
 
 
 class UserInfo(Resource):
-    @Permissions.admin.require(403)
     def get(self, uid):
         print 'g.identity', g.identity
         if uid == 'now':
