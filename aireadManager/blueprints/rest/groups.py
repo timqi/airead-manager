@@ -3,6 +3,7 @@ import os
 from flask import abort, request
 from flask.blueprints import Blueprint
 from flask.ext.restful import Api, reqparse, fields, marshal_with
+from aireadManager.utils.permissions import Permissions
 from aireadManager.utils.restful import Resource
 from aireadManager.model.group import GroupModel
 from aireadManager.model import db
@@ -28,10 +29,12 @@ def get_parser(required=False):
 
 
 class Groups(Resource):
+    @Permissions.admin.require(403)
     @marshal_with(group_fields)
     def get(self):
         return GroupModel.query.all()
 
+    @Permissions.admin.require(403)
     def post(self):
         args = get_parser(required=True).parse_args()
 
@@ -51,13 +54,16 @@ class Groups(Resource):
 
 
 class Group(Resource):
+    @Permissions.admin.require(403)
     @marshal_with(group_fields)
     def get(self, gid):
         return db.session.query(GroupModel).filter_by(id=gid).first()
 
+    @Permissions.admin.require(403)
     def post(self):
         abort(405)
 
+    @Permissions.admin.require(403)
     def put(self, gid):
         args = get_parser().parse_args()
 
@@ -70,6 +76,7 @@ class Group(Resource):
         }
         return ret
 
+    @Permissions.admin.require(403)
     def delete(self, gid):
         db.session.query(GroupModel).filter_by(id=gid).delete()
         db.session.commit()
@@ -92,6 +99,7 @@ def formatGroup(group):
 
 
 class GroupInfos(Resource):
+    @Permissions.admin.require(403)
     def get(self):
         groups = db.session.query(GroupModel).all()
 

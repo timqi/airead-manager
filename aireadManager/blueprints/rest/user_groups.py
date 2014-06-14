@@ -3,6 +3,7 @@ import os
 from flask import abort
 from flask.blueprints import Blueprint
 from flask.ext.restful import Api, reqparse, fields, marshal_with
+from aireadManager.utils.permissions import Permissions
 from aireadManager.utils.restful import Resource
 from aireadManager.model.user_group import UserGroupModel
 from aireadManager.model import db
@@ -34,6 +35,7 @@ class UserGroups(Resource):
     def get(self):
         return UserGroupModel.query.all()
 
+    @Permissions.admin.require(403)
     def post(self):
         args = get_parser(required=True).parse_args()
 
@@ -56,9 +58,11 @@ class UserGroup(Resource):
     def get(self, ugid):
         return db.session.query(UserGroupModel).filter_by(id=ugid).first()
 
+    @Permissions.admin.require(403)
     def post(self):
         abort(405)
 
+    @Permissions.admin.require(403)
     def put(self, ugid):
         args = get_parser().parse_args()
 
@@ -71,6 +75,7 @@ class UserGroup(Resource):
         }
         return ret
 
+    @Permissions.admin.require(403)
     def delete(self, ugid):
         db.session.query(UserGroupModel).filter_by(id=ugid).delete()
         db.session.commit()
@@ -78,9 +83,11 @@ class UserGroup(Resource):
 
 
 class UserGroupDelete(Resource):
+    @Permissions.admin.require(403)
     def post(self):
         abort(405)
 
+    @Permissions.admin.require(403)
     def delete(self, user_id, group_id):
         db.session.query(UserGroupModel).filter_by(
             user_id=user_id).filter_by(group_id=group_id).delete()

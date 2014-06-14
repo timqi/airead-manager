@@ -9,7 +9,7 @@ from aireadManager.utils.errors import Code
 from aireadManager.utils.util import get_string_from_datetime
 from aireadManager.utils.principal import role_set
 from aireadManager.utils.permissions import Roles
-from aireadManager.test.init_te_st_db import USER1, USER2, init_db
+from aireadManager.test.init_te_st_db import USER1, USER2, init_db, TestDBConfig
 
 
 __author__ = 'airead'
@@ -21,15 +21,9 @@ SuccessRet = {
 }
 
 
-class TestConfig(object):
-    DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test_manager.db'
-    SQLALCHEMY_ECHO = False
-
-
 class Test_users(TestCase):
     def create_app(self):
-        app.config.from_object(TestConfig)
+        app.config.from_object(TestDBConfig)
         return app
 
     def setUp(self):

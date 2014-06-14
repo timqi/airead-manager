@@ -9,6 +9,12 @@ from aireadManager.model.permission import PermissionModel
 from aireadManager.model.group_permission import GroupPermissionModel
 
 
+class TestDBConfig(object):
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test_manager.db'
+    SQLALCHEMY_ECHO = False
+
+
 USER1 = {
     'username': 'user1',
     'first_name': 'us',

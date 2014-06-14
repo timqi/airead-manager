@@ -5,6 +5,7 @@ from datetime import datetime
 from aireadManager.main import app
 from aireadManager.model import db
 from aireadManager.model.user import UserModel
+from aireadManager.test.init_te_st_db import TestDBConfig
 from aireadManager.utils.errors import Code
 
 
@@ -43,15 +44,9 @@ USER2 = {
 }
 
 
-class TestConfig(object):
-    DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test_manager.db'
-    SQLALCHEMY_ECHO = False
-
-
-class Test_users(TestCase):
+class Test_login(TestCase):
     def create_app(self):
-        app.config.from_object(TestConfig)
+        app.config.from_object(TestDBConfig)
         return app
 
     def setUp(self):

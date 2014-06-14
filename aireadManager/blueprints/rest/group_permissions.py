@@ -3,6 +3,7 @@ import os
 from flask import abort
 from flask.blueprints import Blueprint
 from flask.ext.restful import Api, reqparse, fields, marshal_with
+from aireadManager.utils.permissions import Permissions
 from aireadManager.utils.restful import Resource
 from aireadManager.model.group_permission import GroupPermissionModel
 from aireadManager.model import db
@@ -34,6 +35,7 @@ class GroupPermissions(Resource):
     def get(self):
         return GroupPermissionModel.query.all()
 
+    @Permissions.admin.require(403)
     def post(self):
         args = get_parser(required=True).parse_args()
 
@@ -54,9 +56,11 @@ class GroupPermission(Resource):
     def get(self, gpid):
         return db.session.query(GroupPermissionModel).filter_by(id=gpid).first()
 
+    @Permissions.admin.require(403)
     def post(self):
         abort(405)
 
+    @Permissions.admin.require(403)
     def put(self, gpid):
         args = get_parser().parse_args()
 
@@ -69,6 +73,7 @@ class GroupPermission(Resource):
         }
         return ret
 
+    @Permissions.admin.require(403)
     def delete(self, gpid):
         db.session.query(GroupPermissionModel).filter_by(id=gpid).delete()
         db.session.commit()
@@ -76,9 +81,11 @@ class GroupPermission(Resource):
 
 
 class GroupPermissionDelete(Resource):
+    @Permissions.admin.require(403)
     def post(self):
         abort(405)
 
+    @Permissions.admin.require(403)
     def delete(self, group_id, perm_id):
         db.session.query(GroupPermissionModel).filter_by(
             group_id=group_id).filter_by(permission_id=perm_id).delete()

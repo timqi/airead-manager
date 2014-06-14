@@ -5,7 +5,10 @@ from nose.tools import assert_equal
 from aireadManager.main import app
 from aireadManager.model import db
 from aireadManager.model.group import GroupModel
+from aireadManager.test.init_te_st_db import TestDBConfig
 from aireadManager.utils.errors import Code
+from aireadManager.utils.permissions import Roles
+from aireadManager.utils.principal import role_set
 
 
 __author__ = 'airead'
@@ -23,15 +26,9 @@ GuestGroup = {
 }
 
 
-class TestConfig(object):
-    DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test_manager.db'
-    SQLALCHEMY_ECHO = False
-
-
 class Test_Groups(TestCase):
     def create_app(self):
-        app.config.from_object(TestConfig)
+        app.config.from_object(TestDBConfig)
         return app
 
     def setUp(self):
@@ -48,6 +45,10 @@ class Test_Groups(TestCase):
 
     def test_groups_get(self):
         rv = self.client.get('/groups/')
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.get('/groups/')
         adminGroup, guestGroup = rv.json
         assert_equal(adminGroup['name'], AdminGroup['name'])
         assert_equal(guestGroup['name'], GuestGroup['name'])
@@ -58,6 +59,10 @@ class Test_Groups(TestCase):
         }
 
         rv = self.client.post('groups/?at=post', data=data)
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.post('groups/?at=post', data=data)
         print rv.json
         assert_equal(rv.json['uri'], '/groups/3')
 
@@ -69,6 +74,10 @@ class Test_Groups(TestCase):
             'name': '笨蛋管理员'
         }
         rv = self.client.post('groups/1?at=put', data=data)
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.post('groups/1?at=put', data=data)
         assert_equal(rv.json, SuccessRet)
 
         group = db.session.query(GroupModel).filter_by(id=1).one()
@@ -76,6 +85,10 @@ class Test_Groups(TestCase):
 
     def test_group_delete(self):
         rv = self.client.post('groups/1?at=delete')
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.post('groups/1?at=delete')
         assert_equal(rv.json, SuccessRet)
 
         groups = db.session.query(GroupModel).all()
@@ -85,4 +98,8 @@ class Test_Groups(TestCase):
 
     def test_group_get(self):
         rv = self.client.get('/groups/1')
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.get('/groups/1')
         assert_equal(rv.json['name'], AdminGroup['name'])

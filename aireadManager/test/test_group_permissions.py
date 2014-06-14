@@ -5,7 +5,10 @@ from nose.tools import assert_equal
 from aireadManager.main import app
 from aireadManager.model import db
 from aireadManager.model.group_permission import GroupPermissionModel
+from aireadManager.test.init_te_st_db import TestDBConfig
 from aireadManager.utils.errors import Code
+from aireadManager.utils.permissions import Roles
+from aireadManager.utils.principal import role_set
 
 
 __author__ = 'airead'
@@ -25,15 +28,9 @@ GroupPerm2 = {
 }
 
 
-class TestConfig(object):
-    DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test_manager.db'
-    SQLALCHEMY_ECHO = False
-
-
 class Test_GroupPermissions(TestCase):
     def create_app(self):
-        app.config.from_object(TestConfig)
+        app.config.from_object(TestDBConfig)
         return app
 
     def setUp(self):
@@ -63,6 +60,10 @@ class Test_GroupPermissions(TestCase):
         }
 
         rv = self.client.post('group_permissions/', data=data)
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.post('group_permissions/', data=data)
         assert_equal(rv.json['uri'], '/group_permissions/3')
 
         groups = db.session.query(GroupPermissionModel).all()
@@ -73,6 +74,10 @@ class Test_GroupPermissions(TestCase):
             'permission_id': 1
         }
         rv = self.client.post('group_permissions/1?at=put', data=data)
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.post('group_permissions/1?at=put', data=data)
         assert_equal(rv.json, SuccessRet)
 
         group = db.session.query(GroupPermissionModel).filter_by(id=1).one()
@@ -80,6 +85,10 @@ class Test_GroupPermissions(TestCase):
 
     def test_group_delete(self):
         rv = self.client.post('group_permissions/1?at=delete')
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.post('group_permissions/1?at=delete')
         assert_equal(rv.json, SuccessRet)
 
         groups = db.session.query(GroupPermissionModel).all()

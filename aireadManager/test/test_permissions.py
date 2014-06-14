@@ -5,7 +5,10 @@ from nose.tools import assert_equal
 from aireadManager.main import app
 from aireadManager.model import db
 from aireadManager.model.permission import PermissionModel
+from aireadManager.test.init_te_st_db import TestDBConfig
 from aireadManager.utils.errors import Code
+from aireadManager.utils.permissions import Roles
+from aireadManager.utils.principal import role_set
 
 
 __author__ = 'airead'
@@ -25,15 +28,9 @@ Perm2 = {
 }
 
 
-class TestConfig(object):
-    DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test_manager.db'
-    SQLALCHEMY_ECHO = False
-
-
 class Test_Permissions(TestCase):
     def create_app(self):
-        app.config.from_object(TestConfig)
+        app.config.from_object(TestDBConfig)
         return app
 
     def setUp(self):
@@ -61,6 +58,10 @@ class Test_Permissions(TestCase):
         }
 
         rv = self.client.post('permissions/?at=post', data=data)
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.post('permissions/?at=post', data=data)
         print rv.json
         assert_equal(rv.json['uri'], '/permissions/3')
 
@@ -72,6 +73,10 @@ class Test_Permissions(TestCase):
             'tag': 'stupidAdmin'
         }
         rv = self.client.post('permissions/1?at=put', data=data)
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.post('permissions/1?at=put', data=data)
         assert_equal(rv.json, SuccessRet)
 
         group = db.session.query(PermissionModel).filter_by(id=1).one()
@@ -79,6 +84,10 @@ class Test_Permissions(TestCase):
 
     def _test_permission_delete(self):
         rv = self.client.post('permissions/1?at=delete')
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.post('permissions/1?at=delete')
         assert_equal(rv.json, SuccessRet)
 
         ps = db.session.query(PermissionModel).all()
