@@ -20,7 +20,8 @@
     <div class="row">
         <div class="col-md-2 border" style="padding-left: 0;">
             <accordion close-others="oneAtATime">
-                <accordion-group ng-repeat="name in navHeaderList" heading="{{ name }}" is-open="True">
+                <accordion-group ng-repeat="name in navHeaderList" heading="{{ name }}" is-open="True"
+                         ng-show="treeDef[name]">
                     <ul class="f-nav-list">
                         <li ng-repeat="(name, item) in treeDef[name]">
                             <a ng-href="#/{{ item.url }}">{{ item.name }}</a>

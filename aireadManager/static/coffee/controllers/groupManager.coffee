@@ -1,7 +1,8 @@
 define [
   './base'
   'static/lib/async'
-], (indexCtlModule, async) ->
+  'static/js/utils'
+], (indexCtlModule, async, utils) ->
   moduleName = 'groupManager'
   console.log "#{moduleName} init"
   indexCtlModule.controller "#{moduleName}Ctl",
@@ -202,6 +203,7 @@ define [
   ret =
     group: '权限管理'
     item: '用户组管理'
+    role: utils.Roles.admin
     url: moduleName
 
   return ret
