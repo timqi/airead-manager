@@ -7,6 +7,8 @@ from aireadManager.model import db
 from aireadManager.model.user import UserModel
 from aireadManager.utils.errors import Code
 from aireadManager.utils.util import get_string_from_datetime
+from aireadManager.utils.principal import role_set
+from aireadManager.utils.permissions import Roles
 from aireadManager.test.init_te_st_db import USER1, USER2, init_db
 
 
@@ -40,8 +42,12 @@ class Test_users(TestCase):
 
     def test_users_get(self):
         rv = self.client.get('/users/')
-        user1, user2 = rv.json
+        self.assert403(rv)
 
+        with role_set(Roles.admin):
+            rv = self.client.get('/users/')
+
+        user1, user2 = rv.json
         assert_equal(user1['id'], 1)
         assert_equal(user1['username'], 'user1')
         assert_equal(user2['id'], 2)
@@ -61,6 +67,10 @@ class Test_users(TestCase):
             'date_joined': get_string_from_datetime(datetime.now())
         }
         rv = self.client.post('users/?at=post', data=data)
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.post('users/?at=post', data=data)
         assert_equal(rv.json['uri'], '/users/3')
 
         users = db.session.query(UserModel).all()
@@ -71,6 +81,10 @@ class Test_users(TestCase):
             'username': 'Airead'
         }
         rv = self.client.post('users/1?at=put', data=data)
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.post('users/1?at=put', data=data)
         assert_equal(rv.json, SuccessRet)
 
         user = db.session.query(UserModel).filter_by(id=1).one()
@@ -78,6 +92,10 @@ class Test_users(TestCase):
 
     def test_user_delete(self):
         rv = self.client.post('users/1?at=delete')
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.post('users/1?at=delete')
         assert_equal(rv.json, SuccessRet)
 
         users = db.session.query(UserModel).all()
@@ -87,9 +105,19 @@ class Test_users(TestCase):
 
     def test_user_get(self):
         rv = self.client.get('/users/1')
+        self.assert403(rv)
+
+        with role_set(Roles.admin):
+            rv = self.client.get('/users/1')
         user = rv.json
         assert_equal(user['username'], USER1['username'])
 
     def test_user_info_get(self):
-        rv = self.client.get('/users/infos/1')
-        print rv.json
+        with role_set(Roles.admin):
+            rv = self.client.get('/users/infos/1')
+            print rv.data
+
+    def test_cur_identity(self):
+        with role_set(Roles.admin):
+            rv = self.client.get('/login/cur_identity')
+        print rv.data

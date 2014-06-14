@@ -3,7 +3,7 @@ from flask.ext.principal import Permission, RoleNeed
 __author__ = 'airead'
 
 
-# used by ./utils/permissions.py
+# used by ./blueprints/test_perm.py
 RoleList = [
     'admin',
     'guest',

@@ -53,6 +53,7 @@ class Users(Resource):
     def get(self):
         return UserModel.query.all()
 
+    @Permissions.admin.require(403)
     def post(self):
         print request.form
         args = get_parser(required=True).parse_args()
@@ -73,13 +74,16 @@ class Users(Resource):
 
 
 class User(Resource):
+    @Permissions.admin.require(403)
     @marshal_with(user_fields)
     def get(self, uid):
         return db.session.query(UserModel).filter_by(id=uid).first()
 
+    @Permissions.admin.require(403)
     def post(self):
         abort(405)
 
+    @Permissions.admin.require(403)
     def put(self, uid):
         args = get_parser().parse_args()
 
@@ -90,6 +94,7 @@ class User(Resource):
         db.session.commit()
         return {'code': Code.SUCCESS}
 
+    @Permissions.admin.require(403)
     def delete(self, uid):
         db.session.query(UserModel).filter_by(id=uid).delete()
         db.session.commit()
@@ -136,7 +141,9 @@ class UserInfos(Resource):
 
 
 class UserInfo(Resource):
+    @Permissions.admin.require(403)
     def get(self, uid):
+        print 'g.identity', g.identity
         if uid == 'now':
             uid = g.identity.auth_user.user.id
 

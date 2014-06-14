@@ -66,3 +66,9 @@ def cur_user():
     print 'cur_user user: ', g.identity.auth_user.user.id
     print 'cur_user provides', g.identity.provides
     return g.identity.auth_user.user.username
+
+
+@blueprint.route('/cur_identity')
+def cur_identity():
+    print 'g.identity', g.identity
+    return 'ok'
