@@ -11,3 +11,4 @@ envManager/*
 aireadManager/static/coffee/*/*.js
 aireadManager/static/coffee/*.js
 *.egg-info/*
+*.map
