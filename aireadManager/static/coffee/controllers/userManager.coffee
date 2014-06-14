@@ -47,8 +47,13 @@ define [
 
               $scope.objs = data
               $scope.userParams.reload()
-          .error (data) ->
-              console.log 'get %s failed %s', url, data
+          .error (err, status) ->
+              console.log 'get %s failed ', url, err
+              if status == 403
+                notificationService.notice '没有权限'
+              else
+                notificationService.notice '未知错误'
+
           .finally () ->
               $scope.loading = false
 
@@ -106,6 +111,7 @@ define [
                   $scope.query()
             .error (data) ->
                 console.log('add failed', data)
+                notificationService.notice
           .finally () ->
               $scope.addDisabled = false
 

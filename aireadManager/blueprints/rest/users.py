@@ -9,6 +9,7 @@ from aireadManager.model import db
 from aireadManager.utils.errors import Code
 from aireadManager.utils.util import datetime_type, get_string_from_datetime, bool_type
 from datetime import datetime
+from aireadManager.utils.permissions import Permissions
 
 __author__ = 'airead'
 
@@ -47,6 +48,7 @@ def get_parser(required=False):
 
 
 class Users(Resource):
+    @Permissions.admin.require(403)
     @marshal_with(user_fields)
     def get(self):
         return UserModel.query.all()
@@ -121,6 +123,7 @@ def formatUser(user):
 
 
 class UserInfos(Resource):
+    @Permissions.admin.require(403)
     def get(self):
         users = db.session.query(UserModel).all()
 
