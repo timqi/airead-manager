@@ -3,8 +3,9 @@ define [
   'jQuery'
   'static/lib/async'
   'static/lib/lodash.min'
+  'static/js/utils'
   'dialogs'
-], (indexCtlModule, $, async, _) ->
+], (indexCtlModule, $, async, _, utils) ->
   moduleName = 'userManager'
   console.log "#{moduleName} init"
   indexCtlModule.controller "#{moduleName}Ctl",
@@ -214,6 +215,7 @@ define [
   ret =
     group: '权限管理'
     item: '用户管理'
+    role: utils.Roles.admin
     url: moduleName
 
   return ret

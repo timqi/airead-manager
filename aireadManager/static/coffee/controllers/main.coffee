@@ -8,22 +8,13 @@ define [
 ], (indexCtlModule) ->
   moduleName = 'main'
 
-  ret =
-    group: 'hide'
-    item: 'main'
-    url: moduleName
-
-  args = Array.prototype.slice.apply arguments
-  modules = args.slice(1)
-  modules.push(ret)
-
   indexCtlModule.controller 'mainCtl',
     [
       '$scope'
+      '$rootScope'
       '$http'
       'notificationService'
-      ($scope, $http, notificationService) ->
-        $scope.user = {}
+      ($scope, $rootScope, $http, notificationService) ->
         $scope.name = 'Airead Fan'
         $scope.True = true
         $scope.treeDef = {}
@@ -49,7 +40,7 @@ define [
           console.log "get #{url}"
           $http.get url
           .success (data) ->
-              $scope.user = data
+              $scope.curUser = data
           .error (err) ->
               console.log 'get current user failed', err
               notificationService.notice '获取当前用户失败'
@@ -57,5 +48,13 @@ define [
         getUser()
     ]
 
+  ret =
+    group: 'hide'
+    item: 'main'
+    url: moduleName
+
+  args = Array.prototype.slice.apply arguments
+  modules = args.slice(1)
+  modules.push(ret)
 
   return modules

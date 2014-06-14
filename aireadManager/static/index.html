@@ -12,8 +12,8 @@
                 <a class="navbar-brand" ng-href="index.html">Manager</a>
             </div>
             <ul class="nav navbar-nav navbar-right">
-                <li ng-show="!user.username"><a ng-href="/login/">登陆</a></li>
-                <li ng-show="user.username"><a ng-href="/login/">欢迎, {{ user.username }}</a></li>
+                <li ng-show="!curUser.username"><a ng-href="/login/">登陆</a></li>
+                <li ng-show="curUser.username"><a ng-href="/login/">欢迎, {{ curUser.username }}</a></li>
             </ul>
         </div>
     </div>
