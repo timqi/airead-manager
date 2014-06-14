@@ -19,8 +19,16 @@ define [
 
   indexCtlModule.controller 'mainCtl',
     [
-      '$scope',
-      ($scope) ->
+      '$scope'
+      '$http'
+      'notificationService'
+      ($scope, $http, notificationService) ->
+        $scope.user = {}
+        $scope.name = 'Airead Fan'
+        $scope.True = true
+        $scope.treeDef = {}
+        $scope.navHeaderList = ['系统管理', '权限管理', 'hide']
+
         genTreeDef = (moduleList) ->
           treeDef = {}
           for m in moduleList
@@ -34,11 +42,19 @@ define [
 
           return treeDef
 
-
-        $scope.name = 'Airead Fan'
-        $scope.True = true
         $scope.treeDef = genTreeDef(modules)
-        $scope.navHeaderList = ['系统管理', '权限管理', 'hide']
+
+        getUser = () ->
+          url = '/users/infos/now'
+          console.log "get #{url}"
+          $http.get url
+          .success (data) ->
+              $scope.user = data
+          .error (err) ->
+              console.log 'get current user failed', err
+              notificationService.notice '获取当前用户失败'
+
+        getUser()
     ]
 
 
