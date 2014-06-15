@@ -1,17 +1,11 @@
-angularjs and Flask seed
+# angularjs and Flask seed
 
-virtualenv venv
+1. virtualenv venv
+2. source venv/bin/active
+3. pip install -r requirements.txt
 
-. venv/bin/active
+将 coffee 编译为 javascript
+4. aireadManager/coff.sh
 
-pip install -r requirements.txt
-
-
-public
-================
-cd public
-bower install angular-bootstrap
-bower install angular-ui
-bower install bootstrap
-bower install angular-route
-bower install smart-table
+创建临时数据库
+5. python aireadManager/create_db.py
