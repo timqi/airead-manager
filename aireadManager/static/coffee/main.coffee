@@ -13,6 +13,7 @@ require.config
     'angular-sanitize': './static/lib/angular-sanitize.min'
     'angular-translate': './static/lib/angular-translate.min'
     'smart-table': './static/lib/Smart-Table.debug'
+    'angular-ng-table': './static/lib/ng-table'
     'angular-pnotify': './static/lib/pnotify'
     'angular-select2': './static/lib/ui-select2'
     'dialogs': './static/lib/dialogs'
@@ -28,6 +29,7 @@ require.config
     'angular-sanitize': {deps: ['angular']}
     'angular-translate': {deps: ['angular']}
     'smart-table': {deps: ['angular']}
+    'angular-ng-table': {deps: ['angular']}
     'angular-pnotify': {deps: ['angular', 'jquery.pnotify']}
     'angular-select2': {deps: ['angular', 'select2']}
     'dialogs': {deps: ['angular', 'angular-ui', 'angular-sanitize', 'angular-translate']}

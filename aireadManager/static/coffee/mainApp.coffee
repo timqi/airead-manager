@@ -5,7 +5,7 @@ define [
   'angular-ui'
   'angular-bootstrap'
   'angular-bootstrap-tpls'
-  'static/lib/ng-table'
+  'angular-ng-table'
   'angular-pnotify'
   'smart-table'
   'angular-select2'
