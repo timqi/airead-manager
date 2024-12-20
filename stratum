@@ -1,0 +1,217 @@
+#!/usr/bin/env python3
+
+import argparse
+import asyncio
+import json
+import logging
+import os
+import re
+
+logging.basicConfig(
+    format="[%(asctime)s] %(message)s",
+    level=logging.INFO,
+)
+logger = logging.getLogger("stratum")
+logger.setLevel(logging.DEBUG)
+
+log_upstream = lambda msg, host="": logger.info("%s%s--> %s%s", host, GREEN, msg, RESET)
+log_downstream = lambda msg, host="": logger.info("%s%s<-- %s%s", host, RED, msg, RESET)
+
+BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = ["\033[{}m".format(30 + i) for i in range(8)]
+RESET = "\033[0m"
+
+
+async def handle_connection(reader, writer, to):
+    remote_addr = writer.get_extra_info("peername")
+    logger.info("New connection from %s", remote_addr)
+
+    to_host, to_port = to.split(":")
+    try:
+        remote_reader, remote_writer = await asyncio.open_connection(to_host, int(to_port))
+    except Exception as e:
+        logger.error("Failed to connect to %s: %s", to, e)
+        writer.close()
+        return
+
+    async def remote_to_client():
+        try:
+            while True:
+                line = await remote_reader.readline()
+                if not line:
+                    break
+                log_downstream(line.decode().strip())
+                writer.write(line)
+                await writer.drain()
+        except Exception as e:
+            logger.error("%sError in remote_to_client: %s%s", YELLOW, e, RESET)
+            writer.close()
+        finally:
+            remote_writer.close()
+
+    asyncio.create_task(remote_to_client())
+
+    while True:
+        line = await reader.readline()
+        if not line:
+            break
+        line = line.decode().strip()
+        obj = json.loads(line)
+        if obj.get("method") == "mining.subscribe" and os.environ.get("USER_AGENT"):
+            obj["params"][0] = os.environ["USER_AGENT"]
+            line = json.dumps(obj)
+        log_upstream(line)
+        remote_writer.write(line.encode() + b"\n")
+        await remote_writer.drain()
+
+    remote_writer.close()
+
+
+async def run_proxy(serve, to):
+    serve_host, serve_port = serve.split(":") if ":" in serve else ("0.0.0.0", serve)
+    handler = lambda reader, writer: handle_connection(reader, writer, to)
+    logger.info("Serving on %s, forwarding to %s", serve, to)
+    server = await asyncio.start_server(handler, serve_host, int(serve_port))
+    async with server:
+        await server.serve_forever()
+
+
+async def do_legacy_conn(writeline, readline, user_agent, user):
+    await writeline(json.dumps({"id": 1, "method": "mining.subscribe", "params": [user_agent]}))
+    await readline()
+    await writeline(json.dumps({"id": 2, "method": "mining.authorize", "params": [user, "x"]}))
+
+
+async def do_cn_conn(writeline, readline, user_agent, user):
+    await writeline(
+        json.dumps(
+            {
+                "id": 1,
+                "method": "login",
+                "params": {
+                    "login": user,
+                    "pass": "worker1",
+                    "agent": user_agent,
+                    "algo": "dynexsolve235",
+                    "mallob_id": "1275eb3aa6d5d691ce5dc5a6090e2b8152d013a7536cb1e11b6b740b38072112",
+                },
+                "jsonrpc": "2.0",
+            }
+        )
+    )
+    s = await readline()
+    id = json.loads(s).get("result", {}).get("id", 0)
+    job_id = json.loads(s).get("result", {}).get("job", {}).get("job_id", 0)
+    await writeline(json.dumps({"id": 2, "jsonrpc": "2.0", "method": "keepalived", "params": {"id": id}}))
+
+    await asyncio.sleep(2)
+    await writeline(
+        json.dumps(
+            {
+                "id": 3,
+                "method": "mallob",
+                "params": {
+                    "id": str(id),
+                    "payload": "baa67d4d1e81a1372cbfd81304c213a3e178ffa62dae9a15740232dc5ceb2ac3190b5a9ff887ad3b997ecfb3a644d901"
+                },
+            }
+        )
+    )
+
+    await asyncio.sleep(2)
+    await writeline(
+        json.dumps(
+            {
+                "id": 4,
+                "method": "submit",
+                "params": {
+                    "id": str(id),
+                    "job_id": str(job_id),
+                    "nonce": "dc280100",
+                    "result": "8ac6df2577eec0efaabf47f87cc2c2cc561d49b9b4d4c1046c34557b21a40100",
+                    "algo": "dynexsolve230",
+                    "mallob": "1275eb3aa6d5d691ce5dc5a6090e2b8152d013a7536cb1e11b6b740b38072112",
+                    "POUW_DATA": "ceb2cc9d54fc4bc12a8a2a6b4af665f38269f20d5decbe77b0674b30ee70ab9311b4a552689911b7b69406dbd502d7e6f45f2c45e60ecd11b9f9b52fe0f25f27175f143c584d5f6381122c6473555ec951e8241290682bf8c3e3600514b27fb5a3bfd5215dd78b3f4c11c56c653cc9f6",
+                },
+            }
+        )
+    )
+
+
+async def run_connect(hosts, user_agent, follow, user, type="legacy"):
+    if type == "cn":
+        func = do_cn_conn
+    else:
+        func = do_legacy_conn
+
+    async def connect(remote, func):
+        try:
+            remote = format_host(remote)
+            host, port = remote.split(":")
+            reader, writer = await asyncio.open_connection(host, int(port))
+
+            async def writeline(line):
+                writer.write(line.encode() + b"\n")
+                await writer.drain()
+                log_upstream(line.strip(), remote + " ")
+
+            async def readline():
+                line = await reader.readline()
+                s = line.decode().strip()
+                log_downstream(s, remote + " ")
+                return s
+
+            await func(writeline, readline, user_agent, user)
+
+            async def read_and_log():
+                while True:
+                    line = await reader.readline()
+                    if not line:
+                        break
+                    log_downstream(line.decode().strip(), remote + " ")
+
+            wait = 24 * 60 * 60 if follow else 5
+            await asyncio.wait_for(read_and_log(), wait)
+
+        except asyncio.TimeoutError as e:
+            writer.close()
+            logger.error("Timeout, abort: %s", remote)
+        except Exception as e:
+            logger.error("Failed to connect to %s: %s", remote, e)
+            logger.exception(e)
+
+    await asyncio.gather(*[connect(remote, func) for remote in hosts.split(",")])
+
+
+def format_host(host):
+    if re.findall(r"^:\d+", host):
+        return "127.0.0.1" + host
+    return host
+
+
+def create_args_parser():
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(dest="command")
+    proxy = subparsers.add_parser("proxy", help="Run a proxy")
+    proxy.add_argument("--serve", help="Serve on this address", default="0.0.0.0:8876")
+    proxy.add_argument("--to", help="Forward to this address", required=True)
+    proxy.add_argument("--kas-ua", default=None)
+    connect = subparsers.add_parser("connect", help="Connect to servers")
+    connect.add_argument("hosts", help="Hosts to connect to, comma sperated")
+    connect.add_argument("-a", "--user-agent", help="User agent to use", default="cpuminer/1.0.1")
+    connect.add_argument("-f", "--follow", action="store_true", help="Follow the server outputs", default=False)
+    connect.add_argument("-u", "--user", help="User to use", default="qiqi.1")
+    connect.add_argument("-t", "--type", default="legacy", choices=["legacy", "cn"])
+    return parser
+
+
+if __name__ == "__main__":
+    parser = create_args_parser()
+    args = parser.parse_args()
+    if args.command == "proxy":
+        if args.kas_ua:
+            os.environ["USER_AGENT"] = args.kas_ua
+        asyncio.run(run_proxy(format_host(args.serve), format_host(args.to)))
+    elif args.command == "connect":
+        asyncio.run(run_connect(args.hosts, args.user_agent, args.follow, args.user, args.type))
+    else:
+        parser.print_help()
